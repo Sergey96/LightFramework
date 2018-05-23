@@ -1,0 +1,220 @@
+body, p {
+	margin:0;
+	padding:0;
+	font-family: Helvetica;
+}
+
+body {
+	background: rgb(237,237,237);
+}
+
+#page {
+    min-width: 1130px;
+}
+
+#sidebar {
+	width:23%;
+	height:700px;
+	background:rgb(55,65,74);
+	float: left;
+}
+
+#wrapper {
+  float: right;
+  width: 77%;
+  background: rgb(237,237,237);
+}
+#breadcrumbs {
+  width: 80%;
+  padding-left: 40px;
+  margin-bottom: 15px;
+  float: left;
+}
+#breadcrumbs ul {
+  padding: 0;
+  margin: 0;
+}
+#breadcrumbs li {
+  display: inline;
+  font-size: 14px;
+}
+#breadcrumbs a {
+  color: rgb(31, 137, 159);
+  text-decoration: none;
+}
+
+#content-title {
+  margin-left: 40px;
+  font-size: 23px;
+  width: 80%;
+  float: left;
+  margin-top: 15px;
+  /*! margin-bottom: 40px; */
+}
+#reminder {
+  width: 12%;
+  height: 69px;
+  float: right;
+}
+#wrapper-title {
+  overflow: hidden;
+  background: rgb(224,224,224);
+}
+
+#filters {
+    background: rgb(249,249,249);
+    margin: 15px 20px 15px 20px;
+    padding: 20px;
+}
+
+#filters-header {
+    overflow: hidden;
+}
+
+#filters-title {
+    font-size: 19px;
+    float: left;
+    width: 80%;
+}
+
+#filters-title-img {
+    float: right;
+	background: #fff;
+	width: 21px;
+	height: 20px;
+	border-radius: 13px;
+	border: 0;
+	box-shadow: 0px 1px 2px 0px #aaa;
+	margin-right: 4px;
+	text-align: center;
+	padding: 2px 2px 0 0;
+	font-size: 14px;
+	font-weight: 700;
+	color: #36a8ab;
+	cursor:pointer;
+}
+
+#filters-title-img  p {
+    transform: rotate(0deg);
+	transition: transform 0.5s;
+}
+
+#filters-body {
+    overflow: hidden;
+	height:1px;
+    margin-top: 10px;
+	transition: height 0.5s;
+}
+
+.filters-field {
+    float: left;
+    margin-right: 20px;
+}
+
+.filters-field p {
+    font-size: 11px;
+    padding: 0px 0 5px 5px;
+}
+
+.filters-field  input{
+    width: 185px;
+    height: 35px;
+    border-radius: 15px;
+    border: 0;
+    box-shadow: inset 0px 1px 0px 0px #c3c3c3;
+	padding-left: 15px;
+	color: #777;
+}
+
+
+.btn-standart {
+	height: 36px;
+	border: 0;
+	border-radius: 20px;
+	color: #fff;
+	padding: 0 15px 0 15px;
+	font-weight: 700;
+	font-size: 14px;
+	cursor:pointer;
+}
+
+.btn-gray {
+	background: #aaa;
+}
+
+.btn-aqva {
+	background: rgb(54, 168,171);
+}
+
+#filters-clear {
+    margin-top: 20px;
+    float: right;
+}
+
+#tools {
+    margin: 15px 20px 15px 20px;
+    padding: 0 20px 0 20px;
+    overflow: hidden;
+}
+
+.tools-element {
+    float: left;
+    margin-right: 20px;
+}
+
+.tools-line {
+	float: right;
+	border-right: 1px solid #aaa;
+	padding-right: 20px;
+	height: 25px;
+	margin-top: 5px;
+}
+
+.t-e-last {
+	float:right;
+}
+
+.t-e-last select {
+    width: 200px;
+    height: 35px;
+    border: 0;
+    box-shadow: inset 0px 1px 0px 0px #c3c3c3;
+}
+
+#data {
+    margin: 15px 20px 15px 20px;
+    overflow: hidden;
+}
+
+#data table {
+	background: rgb(224,224,224);
+	border-radius: 10px 10px 0 0px;
+	color: #777;
+	font-weight: 500;
+	font-size: 13px;
+	width: 100%;
+	text-align: left;
+}
+
+#data table th {
+	font-weight: 500;
+	padding: 15px;
+	padding-left: 15px;
+}
+
+#data table tbody {
+	background: #fff;
+}
+
+#data table td {
+    padding: 10px;
+    border: 0;
+    padding-left: 15px;
+}
+
+#data table .control-td {
+    font-size: 20px;
+    width: 40px;
+    padding-right: 0;
+    cursor: pointer;
+}
