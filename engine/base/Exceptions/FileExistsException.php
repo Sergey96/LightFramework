@@ -2,31 +2,17 @@
 
 namespace engine\base\Exceptions;
 /**
- * Файл не найден
+ * Файл уже существует
  */
-class FileExistsException extends \Exception
+class FileExistsException extends \engine\base\Exceptions\BaseException
 {
-	/**
-	 * Не найденный файл
-	 * @var Element
-	 */
-	public $element;
 
-	/**
-	 * @param Element $element 
-	 */
 	public function __construct($element)
 	{
-		\Exception::__construct('Файл Уже Существует');
+		parent::__construct('Файл Уже Существует');
 		$this->element = $element;
 		$this->code = '';
+		$this->title = $this->message;
 	}
-	/**
-	 * @return Element
-	 *
-	 */
-	public function getElement()
-	{
-		return $this->element;
-	}
+
 }

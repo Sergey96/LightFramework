@@ -2,31 +2,15 @@
 
 namespace engine\base\Exceptions;
 /**
- * Файл не найден
+ * Аргумент не найден
  */
-class ArgumentNotFoundException extends \Exception
+class ArgumentNotFoundException extends \engine\base\Exceptions\BaseException
 {
-	/**
-	 * Не найденный файл
-	 * @var Element
-	 */
-	public $element;
-
-	/**
-	 * @param Element $element 
-	 */
 	public function __construct($element)
 	{
-		\Exception::__construct('Не найден аргумент');
+		parent::__construct('Не найден аргумент');
 		$this->element = $element;
-		$this->code = 404;
-	}
-	/**
-	 * @return Element
-	 *
-	 */
-	public function getElement()
-	{
-		return $this->element;
+		$this->code = 500;
+		$this->title = $this->message;
 	}
 }

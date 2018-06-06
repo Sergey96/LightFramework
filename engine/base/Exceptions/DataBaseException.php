@@ -2,31 +2,17 @@
 
 namespace engine\base\Exceptions;
 /**
- * Файл не найден
+ * Исключение при работе с БД
  */
-class DataBaseException extends \Exception
+class DataBaseException extends \engine\base\Exceptions\BaseException
 {
-	/**
-	 * Не найденный адрес
-	 * @var Element
-	 */
-	public $element;
 
-	/**
-	 * @param Element $element 
-	 */
 	public function __construct($element, $code = 404)
 	{
-		\Exception::__construct('Ошибка БД');
+		parent::__construct('Исключение БД');
 		$this->element = $element;
 		$this->code = $code;
+		$this->title = 'Исключение БД';
 	}
-	/**
-	 * @return Element
-	 *
-	 */
-	public function getElement()
-	{
-		return $this->element;
-	}
+	
 }
