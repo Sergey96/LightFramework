@@ -1,0 +1,18 @@
+.breadcrumb {
+	padding: 5px 15px;
+	background-color: #6babff;
+	border-radius: 0px 0px 10px 10px;
+}
+
+.breadcrumb  a {
+	color: #fefefe;
+	text-decoration: underline;
+}
+
+.breadcrumb > .active {
+    color: #111;
+}
+
+.full-w-box {
+	overflow:hidden;
+}
