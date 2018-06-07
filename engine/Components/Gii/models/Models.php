@@ -7,27 +7,85 @@ use engine\base\Exceptions as Exceptions;
 use engine\Models\Model;
 use engine\Components\Gii\models\Column;
 
+/**
+ * GII генерирование Моделей
+ */
+/// GII генерирование Моделей
 class Models extends Model
 {
+
+	public static $attributeLabels =
+	[
+		'tableName' => ['TableName', 'text', 'required'],
+		'className' => ['className', 'text', 'required'],
+		'nameSpace' => ['nameSpace', 'text', 'required'],
+		'parentClass' => ['parentClass', 'text', 'required'],
+		'tablePrefix' => ['tablePrefix', 'text', 'required'],
+		'isLabel' => ['isLabel', 'text', 'required'],
+		'templateName' => ['templateName', 'text', 'required']
+	];
+	
+	/**
+	 * Имя таблицы связываемой с моделью
+	 */
 	public $tableName;
+	
+	/**
+	 * Имя Класса Модели (ex. UsersModel)
+	 */
 	public $className;
+		
+	/**
+	 * Пространство имен Модели
+	 */
 	public $nameSpace;
+	
+	/**
+	 * Родительский класс
+	 */
 	public $parentClass;
+		
+	/**
+	 * Префикс таблиц бд
+	 */
 	public $tablePrefix;
+		
+	/**
+	 * Использовать метки из комментариев полей
+	 */
 	public $isLabel;
+		
+	/**
+	 * Имя шаблона Модели
+	 */
 	public $templateName;
 	
+	/**
+	 * Исходный код модели
+	 * на каждом этапе хранится текущее состояние
+	 * сначала загружается текст из шаблона
+	 * постепенно заменяются метки в шаблоне на данные от пользователя
+	 * либо поля из связанной таблицы
+	 */
 	private $model;
 	
+	/**
+	 * Загружает исходный код шаблона в $this->model
+	 * @throw FileNotFoundException Не Найден Файл Шаблона
+	 */
 	public function openTemplate(){
-		$path = __DIR__ . '/';
-		$filepath = __DIR__ . '/../' . $this->templateName . '.tmpl';
-		if(file_exists($filepath))
+		$filepath = WebApp::$home."/engine/components/Gii/".$this->templateName.'.tpl';
+		if(file_exists($filepath)){
 			$this->model = file_get_contents($filepath);
+		}
 		else 
 			throw new Exceptions\FileNotFoundException($filepath);
 	}
 	
+	/**
+	 * Заменяет основные метки, а также вставляет списки полей,
+	 * полученные из связанной таблицы
+	 */
 	public function insertValues(){
 		$this->model = str_replace("###NAMESPACE###", $this->nameSpace, $this->model);
 		$this->model = str_replace("###CLASS_NAME###", $this->className, $this->model);
@@ -45,15 +103,16 @@ class Models extends Model
 		foreach($this->attributes_ as $column){
 			$column->Type == "int(11)" ? $type = "int" : $type = $column->Type;
 			$counter++;
-			$stringToReplaceFields .= $this->getFieldsAsString($column->Field, $type);
+			$stringToReplaceFields .= $this->getFieldsAsString($column->Field);
 			$stringToReplacePHPDocsFields .= $this->getPHPDocsAsString($column->Field, $type);
 			
-			$stringToReplaceLabels .= $this->getFieldsAsString($column->Field, mb_strtoupper($column->Field));
 			if($column->Null=='NO')
-				$stringToReplaceFields .= $this->getFieldsAsString($column->Field, 'required');
-			//print_r($counter."::".count($this->attributes_)."\n");
+				$stringToReplaceLabels .= $this->getPropertiesAsString($column->Field, mb_strtoupper($column->Field), $type, 'required');
+			else
+				$stringToReplaceLabels .= $this->getPropertiesAsString($column->Field, mb_strtoupper($column->Field), $type);
+			
 			if($counter == count($this->attributes_)){
-				$stringToReplaceFields = substr($stringToReplaceFields , 0, strlen($stringToReplaceFields)-2);
+				$stringToReplaceFields = substr($stringToReplaceFields , 0, strlen($stringToReplaceFields)-1);
 				$stringToReplaceLabels = substr($stringToReplaceLabels , 0, strlen($stringToReplaceLabels)-2);
 			}
 		}
@@ -65,22 +124,41 @@ class Models extends Model
 		else return false;
 	}
 	
-	private function getFieldsAsString($field, $param){
-		return "\t\t[['$field'], '$param'],\n";
+	/**
+	 * Шаблон свойства модели
+	 */
+	private function getFieldsAsString($field){
+		return "\tpublic $$field;\n";
 	}
 	
+	/**
+	 * Шаблон правил валидации модели
+	 */
+	private function getPropertiesAsString($field, $param, $type, $required = false){
+		if($required===false)
+			return "\t\t'$field' => ['$param', '$type'],\n";
+		else
+			return "\t\t'$field' => ['$param', '$type', '$required'],\n";
+	}
+	
+	/**
+	 * Шаблон PHPDocs
+	 */
 	private function getPHPDocsAsString($field, $param){
 		return " * @property $param $$field\n";
 	}
 	
+	/**
+	 * Записывает получившийся код модели в конечную папку
+	 * @throw FileExistsException Файл Уже Существует (данные не перезаписываются)
+	 */
 	public function writeModel(){
-		$filepath = WebApp::$home.$this->nameSpace."/".$this->className.'.php';
+		$filepath = str_replace("\\", "/", WebApp::$home.'/'.$this->nameSpace."/".$this->className.'.php');
 
 		if(file_exists($filepath))
 			throw new Exceptions\FileExistsException($filepath);
 		else 
 			file_put_contents($filepath, $this->model);
 	}
-	
-	
+		
 }
