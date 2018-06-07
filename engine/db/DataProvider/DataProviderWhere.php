@@ -31,6 +31,7 @@ class DataProviderWhere
 	}
 	
 	public function One(){
+		$this->all = 1;
 		$this->query .= ' LIMIT 1';
 		return $this;
 	}
@@ -43,7 +44,7 @@ class DataProviderWhere
 		if($this->asArray)
 			return $result->fetchAll(\PDO::FETCH_ASSOC);
 		if($this->all){
-			return $result->fetchAll(\PDO::FETCH_CLASS, $class);
+			return $result->fetchAll(\PDO::FETCH_CLASS, get_class($class));
 		}
 	}
 }

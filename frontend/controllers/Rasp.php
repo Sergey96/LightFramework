@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use engine\WebApp;
 use engine\Controller\Controller;
 use frontend\models\ScheduleModel;
+use frontend\models\SearchModels\ScheduleSearchModel;
 
 /**
  * Rasp - frontend\controllers Контроллер
@@ -56,9 +57,12 @@ class Rasp extends Controller
 	 * action - Главная страница
 	 */
 	public function actionGroups(){
-		$model = new ScheduleModel();
-		$model = $model->getAll();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new ScheduleSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('view', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	/**
@@ -71,7 +75,7 @@ class Rasp extends Controller
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
-			$model = $model->getByID($id);
+			$model = $model->findOne($id);
 			$this->render('update', ['model'=>$model]);
 		}
 	}
@@ -95,7 +99,7 @@ class Rasp extends Controller
 	 */
 	public function actionView($id){
 		$model = new ScheduleModel();
-		$model = $model->getByID($id);
+		$model = $model->findOne($id);
 		$this->render('view', ['model'=>$model]);
 	}
 	
@@ -104,7 +108,7 @@ class Rasp extends Controller
 	 */
 	public function actionDelete($id){
 		$model = new ScheduleModel();
-		$model = $model->getByID($id)->delete();
+		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}
 	

@@ -71,7 +71,7 @@ class Home extends Controller
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
-			$model = $model->getByID($id);
+			$model = $model->findOne($id);
 			$this->render('update', ['model'=>$model]);
 		}
 	}
@@ -82,7 +82,7 @@ class Home extends Controller
 	public function actionView($id){
 		/// TODO: Сделать свойство Table статическим
 		$model = new FilmsModel();
-		$model = $model->getByID($id);
+		$model = $model->findOne($id);
 		$this->render('view', ['model'=>$model]);
 	}
 		

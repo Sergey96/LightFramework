@@ -67,7 +67,7 @@ class Assign extends Controller
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
-			$model = $model->getByID($id);
+			$model = $model->findOne($id);
 			$this->render('update', ['model'=>$model]);
 		}
 	}
@@ -91,7 +91,7 @@ class Assign extends Controller
 	 */
 	public function actionView($id){
 		$model = new AssignRolesModel();
-		$model = $model->getByID($id);
+		$model = $model->findOne($id);
 		$this->render('view', ['model'=>$model]);
 	}
 	
@@ -100,7 +100,7 @@ class Assign extends Controller
 	 */
 	public function actionDelete($id){
 		$model = new AssignRolesModel();
-		$model = $model->getByID($id)->delete();
+		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}
 	

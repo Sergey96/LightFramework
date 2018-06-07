@@ -2,16 +2,16 @@
 
 use engine\widgets\GridView\GridView;
 
-$this->title = 'Расписание по группам';
+$this->title = 'Статьи';
 $this->params['breadcrumbs'][] = ['label'=>'Главная', 'url'=>$this->HomeURL];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = "Статьи";
 ?>
-<div class="site-about">
-	<a class='btn btn-success' href='/rasp/create'>Создать</a>
-	<pre>
-	<?php 
-	
-		print_r($model);
-	?>
-	</pre>
+<div class="articles-view">
+	<?php
+	$list = $dataProvider->exe($searchModel);
+	foreach($list as $article){
+		print_r($article->content);
+		$this->title = $article->title;
+	}
+	?>	
 </div>

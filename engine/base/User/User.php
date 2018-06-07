@@ -5,7 +5,7 @@ namespace engine\base\User;
 use engine\WebApp;
 use engine\base\Exceptions as Exceptions;
 use engine\Components\AccessManager;
-use common\User\UsersModel;
+use common\User\SearchModels\UsersSearchModel;
 
 class User extends \engine\db\ActiveRecord
 {
@@ -36,10 +36,15 @@ class User extends \engine\db\ActiveRecord
 	
 	public function __construct(){
 		$this->session = $_SESSION;
-		$model = new UsersModel();
+		$model = new UsersSearchModel();
 		$login = $this->getSessionValue('user');
 		if($login){
-			$model = $model->getByField('name', $this->session['user']);
+			$models = $model->findName($this->session['user']);
+			if(isset($models[0]))
+				$model = $models[0];
+			//print_r($model);
+			//exit();
+			//$model = $model->getByField('name', $this->session['user']);
 			if($this->compareString($model->token, $this->session['token'])){
 				$this->load($model->getDataAsArray(false));
 			}

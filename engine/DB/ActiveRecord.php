@@ -7,7 +7,7 @@ use engine\models\Model;
 use engine\base\Exceptions as Exceptions;
 
 /// Класс записи в БД
-class ActiveRecord extends Model implements ActiveRecordInterface
+class ActiveRecord extends Model
 {
     /// Связанная таблица в БД
 	public $Table;
@@ -42,15 +42,6 @@ class ActiveRecord extends Model implements ActiveRecordInterface
 	public function setTable($table){
 		$this->Table = $table;
 	}
-
-    /**
-     * Возвращает связанную таблицу
-     *
-     * @return string
-     */
-	public function getTable(){
-		return $this->Table;
-	}
 	
     /**
      * Сохраняет изменения модели в БД
@@ -63,8 +54,7 @@ class ActiveRecord extends Model implements ActiveRecordInterface
 			$Query = $this->generateQuery();
 			
 			$stmt = $this->prepare($Query);
-			$stmt->execute($this->getDataAsArray($this->isNew));
-			
+			$stmt->execute($this->getDataAsArray($this->isNew));	
 			
 			$errors = $stmt->errorInfo();
 			if($errors[1])
@@ -81,7 +71,114 @@ class ActiveRecord extends Model implements ActiveRecordInterface
 			throw new Exceptions\DatabaseException($errors[2]);
 	}
 	
-	public function validate($validate){
+    /**
+     * Генерирование INSERT - SQL запроса
+     *
+     * @return string
+     */
+    protected function insertSQL(){
+        $fields = $this->getFieldsAsString();
+        $data = $this->getFieldsForValueAsString();
+        $query = "INSERT INTO `". $this->Table ."` ($fields) VALUES ($data)";
+        return $query;
+    }
+	
+	/**
+     * Генерирование UPDATE - SQL запроса
+     *
+     * @todo Исправить функцию
+     * @return string
+     */
+    protected function updateSQL(){
+		$fields = $this->getFieldsForUpdateAsString();
+        $query = "UPDATE `". $this->Table ."` SET  $fields WHERE id = :id";
+        return $query;
+    }
+	
+	protected function deleteSQL(){
+        $query = "DELETE FROM `". $this->Table ."` WHERE id = ".$this->id;
+        return $query;
+    }
+
+	    /**
+     * Генерирует объект запроса к БД
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+	protected function generateQuery(){
+		if($this->isNew){
+			return $this->insertSQL();
+		}
+		else {	
+		    return $this->updateSQL();
+		}
+	}
+	
+	public function getFields(){
+		$data = array();
+		foreach($this::$attributeLabels as $k => $v)
+		{
+			$data[] = $k;
+		}
+		return $data;
+	}
+
+	protected function getFieldsAsString(){
+		$string ='';
+		foreach($this::$attributeLabels as $k => $v)
+		{
+			if($v[2]=='autoincrement')
+				continue;
+			if(strlen($string)==0)
+				$string .= "`".$k."`";
+			else
+				$string .= ", `".$k."`";
+		}
+		return $string;
+	}
+		
+	protected function getFieldsForValueAsString(){
+		$string ='';
+		foreach($this::$attributeLabels as $k => $v)
+		{
+			if($v[2]=='autoincrement')
+				continue;
+			if(strlen($string)==0)
+				$string .= ":$k";
+			else
+				$string .= ", :$k";
+		}
+		return $string;
+	}
+	
+	protected function getFieldsForUpdateAsString(){
+		$string ='';
+		foreach($this::$attributeLabels as $k => $v)
+		{
+			if($k=='id')
+				continue;
+			if(strlen($string)==0)
+				$string .= "$k = :$k";
+			else
+				$string .= ", $k = :$k";
+		}
+		return $string;
+	}
+
+	public function getDataAsArray($isNew){
+		$data = array();
+		foreach($this::$attributeLabels as $k => $v)
+		{
+			if($v[2]=='autoincrement' && $isNew){
+				continue;
+			}
+			$data[$k] = $this->$k;
+		}
+		return $data;
+	}
+	
+	protected function validate($validate){
 		
 		if($validate){
 			$issetErrors = false;
@@ -111,166 +208,11 @@ class ActiveRecord extends Model implements ActiveRecordInterface
 		else return true;
 	}
 	
-	public function validateDate($date, $format = 'Y-m-d H:i:s')
-	{
+	public function validateDate($date, $format = 'Y-m-d H:i:s'){
 		$d = date_parse_from_format($format, $date);
 		return $d['warning_count'] || $d['error_count'];
 	}
 
-    /**
-     * Генерирует объект запроса к БД
-     *
-     * @return string
-     * @throws \ReflectionException
-     */
-	public function generateQuery(){
-		if($this->isNew){
-			return $this->insertSQL();
-		}
-		else {	
-		    return $this->updateSQL();
-		}
-	}
-
-    /**
-     * Генерирование INSERT - SQL запроса
-     *
-     * @return string
-     */
-    public function insertSQL(){
-        $fields = $this->getFieldsAsString();
-        $data = $this->getFieldsForValueAsString();
-        $query = "INSERT INTO `". $this->Table ."` ($fields) VALUES ($data)";
-        return $query;
-    }
-	
-	public function deleteSQL(){
-        $query = "DELETE FROM `". $this->Table ."` WHERE id = ".$this->id;
-        return $query;
-    }
-	
-	public function getFieldsAsString(){
-		$string ='';
-		foreach($this::$attributeLabels as $k => $v)
-		{
-			if($v[2]=='autoincrement')
-				continue;
-			if(strlen($string)==0)
-				$string .= "`".$k."`";
-			else
-				$string .= ", `".$k."`";
-		}
-		return $string;
-	}
-	
-	public function getFieldsForValueAsString(){
-		$string ='';
-		foreach($this::$attributeLabels as $k => $v)
-		{
-			if($v[2]=='autoincrement')
-				continue;
-			if(strlen($string)==0)
-				$string .= ":$k";
-			else
-				$string .= ", :$k";
-		}
-		return $string;
-	}
-	
-	public function getDataAsArray($isNew){
-		$data = array();
-		foreach($this::$attributeLabels as $k => $v)
-		{
-			if($v[2]=='autoincrement' && $isNew){
-				continue;
-			}
-			$data[$k] = $this->$k;
-		}
-		return $data;
-	}
-	
-	
-	public function getFields(){
-		$data = array();
-		foreach($this::$attributeLabels as $k => $v)
-		{
-			$data[] = $k;
-		}
-		return $data;
-	}
-
-    /**
-     * Генерирование UPDATE - SQL запроса
-     *
-     * @todo Исправить функцию
-     * @return string
-     */
-    public function updateSQL(){
-		$fields = $this->getFieldsForUpdateAsString();
-        $query = "UPDATE `". $this->Table ."` SET  $fields WHERE id = :id";
-        return $query;
-    }
-	
-	public function getFieldsForUpdateAsString(){
-		$string ='';
-		foreach($this::$attributeLabels as $k => $v)
-		{
-			if($k=='id')
-				continue;
-			if(strlen($string)==0)
-				$string .= "$k = :$k";
-			else
-				$string .= ", $k = :$k";
-		}
-		return $string;
-	}
-
-    /**
-     * Генерирование SELECT - SQL запроса
-     *
-     * @return string
-     */
-	public function select($field){
-		$query = "SELECT ";
-		if(is_array($field))
-			$query .= $this->getStringFromArray($field);
-		else
-			$query .= $field;
-		$query .= " FROM `".$this->Table."`";
-
-		return $query;
-	}
-	
-	/**
-     * Получить данные в виде массива моделей
-     *
-     * @return string
-     */
-	public function getData($fieldList,  $limit){
-		$query = $this->select($fieldList); 
-		$query = $this->limit($query, $limit);
-		print_r($query);
-		//exit();
-		$result = $this->exeQuery($query);
-		if (!$result) {
-			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->Table);
-		}
-		return $result->fetchAll(\PDO::FETCH_CLASS, $this->getClassName());
-	}
-	
-	public function limit($query, $limit){
-		return $query . " LIMIT ".$limit;
-	}
-	
-	public function where($query, $array){
-		$where = ' WHERE ';
-		foreach($array as $operator => $operands){
-			switch($operator){
-				case "=": $where .= " `".$operands[0]."` $operator '".$operands[1]."' ";
-			}
-		}
-		return $query . $where;
-	}
 	/*
 	['=' => ['id', '1']
 	['and' => ['id', '1']]
@@ -280,130 +222,36 @@ class ActiveRecord extends Model implements ActiveRecordInterface
 	]]
 	['id', '1']]
 	*/
-	public function getByID($id)
-	{
+	public function getByIDs($id){
 		return $this->getByField('id', $id);
 	}
 	
-	public function getByField($field, $value)
-	{
-		$query = $this->select("*"); 
-		$query = $this->where($query, ['=' => [$field, $value]]);
+	public function findOne($id){
+		$query = "SELECT * FROM ".$this->Table." WHERE id = :id";
+		$stmt = $this->prepare($query);
+		$aa = $stmt->execute(['id'=>$id]);
+		$row = $stmt->fetchAll(\PDO::FETCH_CLASS, get_class($this));
 		
-		$result = $this->exeQuery($query);
-		if (!$result) {
-			print_r(WebApp::$connection->getErrors());
-			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->Table);
-		}
-		$model = $result->fetchAll(\PDO::FETCH_CLASS, $this->getClassName());
-		
-		if(count($model)==0){
-			$class = $this->getClassName();
-			return new $class();
-		}
+		$errors = $stmt->errorInfo();
+		if($errors[1])
+			throw new Exceptions\DatabaseException($errors[2]);
 		else {
-			$model[0]->isNew = false;
-			return $model[0];	
+			if(isset($row[0])){
+				$row[0]->isNew = 0;
+				return $row[0];
+			}
 		}
 	}
 	
-	public function getAllRecordsByField($field, $value)
-	{
-		$query = $this->select("*"); 
-		$query = $this->where($query, ['=' => [$field, $value]]);
-		
-		$result = $this->exeQuery($query);
-		if (!$result) {
-			print_r(WebApp::$connection->getErrors());
-			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->Table);
-		}
-		$model = $result->fetchAll(\PDO::FETCH_CLASS, $this->getClassName());
-		
-		if(count($model)==0){
-			$class = $this->getClassName();
-			return [new $class()];
-		}
-		else {
-			foreach($model as $v)
-				$v->isNew = false;
-			return $model;	
-		}
-	}
-	
-	
-	public static function findByField($field, $value)
-	{
-		$class = get_called_class();
-		$model = new $class();
-		return $model->getByField($field, $value);
-	}
-	
-	public static function findByID($id)
-	{
-		$class = get_called_class();
-		$model = new $class();
-		return $model->getByID($id);
-	}
-
-    /**
-     * Преобразование имен полей и значений полей объекта в строку (через запятую)
-     *
-     * @return string
-     */
-    public function getStringFromObj($obj){
-		$p = $obj->getProperty();
-		$str = '';
-		foreach($p as $k => $v){
-			if($k==0)
-				$str .= "'".$obj->$v."'";
-			else 
-				$str .= ", '".$obj->$v."'";
-		}
-		return $str;
-	}
-
-    /**
-     * Преобразование массива в строку (через запятую)
-     *
-     * @return string
-     */
-	public function getStringFromArray($array){
-		$str ='';
-		
-		foreach($array as $k =>$v)
-		{
-			if($k==0)
-				$str .= "`".$v."`";
-			else
-				$str .= ", `".$v."`";
-		}
-		
-		//print_r("FIELDLIST");
-		//print_r($str);
-		return $str;
-	}
-
-    /**
-     * Выполняет запрос к БД и возвращает массив записей (для GridView)
-     *
-     * @return string
-     */
-	public function getDataFromDB($field){
-		$fields = array();
-		foreach($field as $v)
-			$fields[] = $v[0];
-		return $this->select($fields);
-	}
-	
-	public function exeQuery($query){
+	protected function exeQuery($query){
 		return WebApp::$connection->executeQuery($query);
 	}
 	
-	public function prepare($query){
+	protected function prepare($query){
 		return WebApp::$connection->prepare($query);
 	}
 	
-	public function getErrorsDB(){
+	protected function getErrorsDB(){
 		return WebApp::$connection->getErrors();
 	}
 

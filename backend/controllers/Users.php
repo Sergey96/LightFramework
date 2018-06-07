@@ -69,7 +69,7 @@ class Users extends Controller
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
-			$model = $model->getByID($id);
+			$model = $model->findOne($id);
 			$this->render('update', ['model'=>$model]);
 		}
 	}
@@ -80,13 +80,13 @@ class Users extends Controller
 	public function actionChangepass($id){
 		$model = new UsersModel();
 		if(isset(WebApp::$request->post()['password'])){
-			$model = $model->getByID($id);
+			$model = $model->findOne($id);
 			$model->password = AccessManager::encryptPassword(WebApp::$request->post()['password']);
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
-			$model = $model->getByID($id);
+			$model = $model->findOne($id);
 			$this->render('ChangePass', ['model'=>$model]);
 		}
 	}
@@ -110,7 +110,7 @@ class Users extends Controller
 	 */
 	public function actionView($id){
 		$model = new UsersModel();
-		$model = $model->getByID($id);
+		$model = $model->findOne($id);
 		$this->render('view', ['model'=>$model]);
 	}
 	
@@ -119,7 +119,7 @@ class Users extends Controller
 	 */
 	public function actionDelete($id){
 		$model = new UsersModel();
-		$model = $model->getByID($id)->delete();
+		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}
 	

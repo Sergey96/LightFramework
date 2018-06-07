@@ -10,7 +10,7 @@ return [
 		'dbname'=>'light',
 	],
 	'controller'=>[
-		'default'=>'Home'
+		'default'=>'Users'
 	],
 	'home'=>str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']),
 	'namespace'=>'backend',

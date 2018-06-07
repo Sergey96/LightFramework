@@ -2,19 +2,28 @@
 
 use engine\widgets\GridView\GridView;
 
-$this->title = 'Редактировать '.$model->Table;
+$this->title = 'Статьи';
 $this->params['breadcrumbs'][] = ['label'=>'Главная', 'url'=>$this->HomeURL];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = "Статьи";
 ?>
-<div class="site-about">
-    <h4>Изменить <?= $model->Table ?></h4>
-		<table>
-			<?php
-				foreach($model->attributeLabels as $name => $properties){
-			?>
-					<tr><td><?= $name ?></td><td><?= $model->$name ?></td></tr>
-			<?php
-				}
-			?>
-		</table>
+<div class="articles-view">
+	<?php
+		$GRID = new GridView([
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+			'fields'=>[
+				'id:text',
+				'id_group:text',
+				'number_work:text',
+				'type_week:text',
+				'number_day:text',
+				'sub_group:text',
+				'type_work:text',
+				'title_work:text',
+				'room:text',
+				'id_teacher:text'
+			]
+		]);
+	
+	?>	
 </div>

@@ -53,7 +53,7 @@ class GridView
 	
 	public function printTable(){
 		$rows = array();
-		$rows = $this->dataProvider->exe(get_parent_class($this->searchModel));
+		$rows = $this->dataProvider->exe($this->searchModel);
 		//$rows = $this->model->getData($this->fieldList, $this->RowsInPage);
 		
 		$HEADER = false;
