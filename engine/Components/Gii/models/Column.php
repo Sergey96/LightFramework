@@ -2,22 +2,23 @@
 
 namespace engine\Components\Gii\models;
 
+/**
+ * Класс - Поле таблицы в БД
+ */
+/// Класс - Поле таблицы в БД
 class Column
 {
+	/// Название поля
 	public $Field;
+	/// Тип поля
 	public $Type;
+	/// Может ли поле принимать пустое значение
 	public $Null;
+	///Key
 	public $Key;
+	/// Значение пол умолчанию
 	public $Default;
+	/// Extra
 	public $Extra;
-	/*
-	public function __construct ($field, $type, $null, $key, $default, $extra){
-		$this->Field = $field
-		$this->Type = $type;
-		$this->Null = $null;
-		$this->Key = $key;
-		$this->Default = $default;
-		$this->Extra = $extra;;
-	}
-*/
+
 }
