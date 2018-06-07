@@ -4,9 +4,10 @@ use yii\helpers\Html;
 use engine\widgets\ActiveForm\ActiveForm;
 
 ?>
-<div class="Rasp-_form">
+<div class="Schedule-_form">
 	
 	<?php $form = ActiveForm::begin(); ?>
+		<?= $form->field($model, 'id')->textInput() ?>
 		<?= $form->field($model, 'id_group')->textInput() ?>
 		<?= $form->field($model, 'number_work')->textInput() ?>
 		<?= $form->field($model, 'type_week')->textarea() ?>

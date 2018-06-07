@@ -10,8 +10,5 @@ $this->title = $title;
         <b><?= $message?>: "<?= $objError ?>"</b>
 		<p><?= $file ?> в строке <b><?= $line ?></b></p>
     </div>
-	<div>
-		<pre><?php print_r($exception); ?></pre>
-	</div>
 
 </div>

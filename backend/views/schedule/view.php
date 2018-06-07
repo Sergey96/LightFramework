@@ -2,7 +2,7 @@
 
 use engine\widgets\GridView\GridView;
 
-$this->title = 'Редактировать фильмы';
+$this->title = 'Редактировать '.$model->Table;
 $this->params['breadcrumbs'][] = ['label'=>'Главная', 'url'=>$this->HomeURL];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h4>Изменить <?= $model->Table ?></h4>
 		<table>
 			<?php
-				foreach($model->attributeLabels as $name => $properties){
+				foreach($model::$attributeLabels as $name => $properties){
 			?>
 					<tr><td><?= $name ?></td><td><?= $model->$name ?></td></tr>
 			<?php

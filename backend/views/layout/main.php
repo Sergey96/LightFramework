@@ -54,7 +54,7 @@ $this->params['breadcrumbs'] = array();
 			  <li>
 				<a href='#'><span>Наполнение</span></a>
 				<ul class='sidebar-submenu'>
-				  <li><a href='/articles/'>Статьи</a></li>
+				  <li><a href='/article/'>Статьи</a></li>
 				  <li><a href='/feedback/'>Обратная связь</a></li>
 				  <li><a href='/rasp/'>Расписание</a></li>
 				  <li><a href='/teachers'>Преподаватели</a></li>
