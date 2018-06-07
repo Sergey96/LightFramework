@@ -8,25 +8,44 @@ $this->params['breadcrumbs'] = array();
 
 <!DOCTYPE html>
 <html>
-<head>
+<?php $this->startHead() ?>
 	<title><?= $this->title ?></title>
-	<link rel="stylesheet" href="/css/maket.css">
-	<link rel="stylesheet" href="/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/css/font-awesome.min.css">
 	
-	<link rel="stylesheet" href="/dist/sidebar-menu.css">
-	
-</head>
+<?php $this->endHead() ?>
 <body>
 	<div id="page">
 		<div id="sidebar">
-			<?php //print_r($side->printSideBar()); ?>
-
+			<ul class='sidebar-menu'>
+			  <li class='sidebar-header'>MAIN NAVIGATION</li>
+			  <li>
+				<a href='#'><span>HOME</span></a>
+				<ul class='sidebar-submenu'>
+				  <li><a href='/home/'>HOME index</a></li>
+				</ul>
+			  </li>
+			  <li>
+				<a href='#'><span>FILMS</span></a>
+				<ul class='sidebar-submenu'>
+				  <li><a href='/films/'>FILMS index</a></li>
+				  <li><a href='/films/create'>FILMS create</a></li>
+				  <li><a href='/films/view?id=1'>FILMS view</a></li>
+				  <li><a href='/films/update?id=1'>FILMS update</a></li>
+				</ul>
+			  </li>
+			  <li>
+				<a href='#'><span>Генератор кода</span></a>
+				<ul class='sidebar-submenu'>
+				  <li><a href='/gii/'>GII index</a></li>
+				  <li><a href='/gii/crud'>GII CRUD</a></li>
+				  <li><a href='/gii/models'>GII Models</a></li>
+				</ul>
+			  </li>
+			</ul>
 		</div>
 		<div id="wrapper">
 			<div id="wrapper-title">
 				<div id="breadcrumbs">
-					<?php Breadcrumbs::printBreadcrumbs($this->params['breadcrumbs']);?>
+					<?php Breadcrumbs::View($this->params['breadcrumbs']);?>
 				</div>
 				<div id="content-title">
 					<div id="content-title-string">
@@ -62,7 +81,6 @@ $this->params['breadcrumbs'] = array();
 	</div>
 <?php $this->endBody() ?>
 </body>
-<script src="/js/jquery-3.0.0.min.js"></script>
 <script src="/dist/sidebar-menu.js"></script>
 <script type='text/javascript'>
 	$.sidebarMenu($('.sidebar-menu'))
