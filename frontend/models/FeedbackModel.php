@@ -44,6 +44,5 @@ class FeedbackModel extends \engine\DB\ActiveRecord
 		'created' => ['Создан', 'datetime', 'null'],
 		'readed' => ['Прочитано', 'int', 'null']
 	];
-	
 }
 

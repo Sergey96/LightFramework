@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use engine\WebApp;
 use engine\Controller\Controller;
 use frontend\models\ArticleModel;
+use frontend\models\SearchModels\ArticleSearchModel;
 
 /**
  * Articles - backend\controllers Контроллер
@@ -53,9 +54,12 @@ class Article extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new ArticleModel();
-		$model = $model->getByID($id);
-		$this->render('view', ['model'=>$model]);
+		$searchModel = new ArticleSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('view', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	

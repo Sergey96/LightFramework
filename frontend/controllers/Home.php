@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use engine\Controller\Controller;
 use frontend\models\FilmsModel;
 use frontend\models\ArticleModel;
+use frontend\models\SearchModels\ArticleSearchModel;
 use engine\WebApp;
 
 class Home extends Controller
@@ -19,9 +20,13 @@ class Home extends Controller
 		$this->render('index', ['model'=>$model]);
 	}
 	
-	public function actionIndex(){
-		$model = new ArticleModel();
-		$this->render('index', ['model'=>$model]);
+	public function actionIndex(){		
+		$searchModel = new ArticleSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	public function actionAll(){
