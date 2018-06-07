@@ -24,7 +24,7 @@ class AccessRolesModel extends \engine\DB\ActiveRecord
      * @inherited
      *
      */
-	public $attributeLabels =
+	public static $attributeLabels =
 	[
 		'id' => ['ID', 'int', 'autoincrement'],
 		'name' => ['NAME', 'text', 'required']
