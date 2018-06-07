@@ -10,21 +10,18 @@ namespace ###NAMESPACE###;
  
 class ###CLASS_NAME### extends ###PARENT_NAME###
 {
-
+	public $Table = '###TABLE_NAME###';
     /**
      * @inherited
      *
      */
-    public $attributes =
-	[
 ###CLASS_FIELDS###
-	];
 	
 	/**
      * @inherited
      *
      */
-	public $attributeLabels =
+	public static $attributeLabels =
 	[
 ###FIELDS_LABELS###
 	];
