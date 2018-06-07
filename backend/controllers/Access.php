@@ -5,11 +5,15 @@ namespace backend\controllers;
 use engine\WebApp;
 use engine\Controller\Controller;
 use backend\models\AccessRolesModel;
+use backend\models\SearchModels\AccessSearchModel;
+
 /**
- * Access - Контроллер
+ * Access - backend\controllers Контроллер
  */
+/// Access - backend\controllers Контроллер
 class Access extends Controller
 {
+
 	/**
 	 * Права доступа
 	 */
@@ -20,12 +24,17 @@ class Access extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete'],
-					'roles' => ['dev', 'admin'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error'],
+					'roles' => ['admin'],
 				],
 				[
-					'allow' => false,
-					'actions' => ['index', 'create', 'update', 'view', 'delete'],
+					'allow' => true,
+					'actions' => ['login', 'error'],
+					'roles' => ['?'],
+				],
+				[
+					'allow' => true,
+					'actions' => ['index', 'view', 'error'],
 					'roles' => ['*'],
 				]
 			],
@@ -37,21 +46,17 @@ class Access extends Controller
 	}
 
 	/**
-	 * action по-умолчанию
-	 */
-	public function action(){
-		$model = new AccessRolesModel();
-		$this->render('index', ['model'=>$model]);
-	}
-	
-	/**
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$model = new AccessRolesModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new AccessSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
-
+	
 	/**
 	 * action - Обновить запись
 	 */
@@ -66,7 +71,7 @@ class Access extends Controller
 			$this->render('update', ['model'=>$model]);
 		}
 	}
-
+	
 	/**
 	 * action - Создать запись
 	 */
@@ -80,16 +85,16 @@ class Access extends Controller
 			$this->render('create', ['model'=>$model]);
 		}
 	}
-
+	
 	/**
-	 * action - Просмотр записи
+	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
 		$model = new AccessRolesModel();
 		$model = $model->getByID($id);
 		$this->render('view', ['model'=>$model]);
 	}
-
+	
 	/**
 	 * action - Удалить запись
 	 */

@@ -28,12 +28,12 @@ class Home extends Controller
 				],
 				[
 					'allow' => true,
-					'actions' => ['login', 'error'],
+					'actions' => ['login', 'error', 'logout'],
 					'roles' => ['?'],
 				],
 				[
 					'allow' => false,
-					'actions' => ['index', 'create', 'update', 'view', 'delete'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'logout'],
 					'roles' => ['*'],
 				]
 			],

@@ -5,13 +5,13 @@ namespace backend\controllers;
 use engine\WebApp;
 use engine\Controller\Controller;
 use backend\models\UsersModel;
-use engine\components\AccessManager;
-
+use backend\models\SearchModels\UsersSearchModel;
+use engine\Components\AccessManager;
 
 /**
- * Users контроллер
+ * Users - backend\controllers Контроллер
  */
-/// Users контроллер
+/// Users - backend\controllers Контроллер
 class Users extends Controller
 {
 
@@ -25,8 +25,8 @@ class Users extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete'],
-					'roles' => ['dev', 'admin'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error', 'changepass'],
+					'roles' => ['admin'],
 				],
 				[
 					'allow' => true,
@@ -34,8 +34,8 @@ class Users extends Controller
 					'roles' => ['?'],
 				],
 				[
-					'allow' => false,
-					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error'],
+					'allow' => true,
+					'actions' => ['index', 'view', 'error'],
 					'roles' => ['*'],
 				]
 			],
@@ -47,34 +47,47 @@ class Users extends Controller
 	}
 
 	/**
-	 * action - действие по-умолчанию
-	 */
-	public function action(){
-		$model = new UsersModel();
-		$this->render('index', ['model'=>$model]);
-	}
-	
-	/**
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$model = new UsersModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new UsersSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	/**
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = UsersModel::findByID($id);
+		$model = new UsersModel();
 		if($model->load(WebApp::$request->post())){
-			$model->password = AccessManager::encryptPassword($model->password);
-			$model->token = ' ';
+			$
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
+			$model = $model->getByID($id);
 			$this->render('update', ['model'=>$model]);
+		}
+	}
+	
+	/**
+	 * action - Обновить запись
+	 */
+	public function actionChangepass($id){
+		$model = new UsersModel();
+		if(isset(WebApp::$request->post()['password'])){
+			$model = $model->getByID($id);
+			$model->password = AccessManager::encryptPassword(WebApp::$request->post()['password']);
+			$model->save();
+			$this->redirect(['view', 'id'=>$id]);
+		}
+		else {
+			$model = $model->getByID($id);
+			$this->render('ChangePass', ['model'=>$model]);
 		}
 	}
 	
@@ -84,8 +97,6 @@ class Users extends Controller
 	public function actionCreate(){
 		$model = new UsersModel();
 		if($model->load(WebApp::$request->post())){
-			$model->password = AccessManager::encryptPassword($model->password);
-			$model->token = ' ';
 			$model->save();
 			$this->redirect(['index']);
 		}
@@ -95,7 +106,7 @@ class Users extends Controller
 	}
 	
 	/**
-	 * action - Просмотр записи
+	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
 		$model = new UsersModel();

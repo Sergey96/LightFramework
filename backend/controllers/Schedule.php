@@ -4,13 +4,14 @@ namespace backend\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use engine\widgets\Sidebar\models\SectionModel;
+use backend\models\ScheduleModel;
+use backend\models\SearchModels\ScheduleSearchModel;
 
 /**
- * Section - backend\controllers Контроллер
+ * Schedule - backend\controllers Контроллер
  */
-/// Section - backend\controllers Контроллер
-class Section extends Controller
+/// Schedule - backend\controllers Контроллер
+class Schedule extends Controller
 {
 
 	/**
@@ -43,31 +44,27 @@ class Section extends Controller
 			]
 		];
 	}
-	
-	/**
-	 * action - действие по-умолчанию
-	 */
-	public function action(){
-		$model = new SectionModel();
-		$this->render('index', ['model'=>$model]);
-	}
 
 	/**
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$model = new SectionModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new ScheduleSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	/**
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new SectionModel();
+		$model = new ScheduleModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
-			$this->redirect(['view', 'id'=>$id], $this->name);
+			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
 			$model = $model->getByID($id);
@@ -79,10 +76,10 @@ class Section extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new SectionModel();
+		$model = new ScheduleModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
-			$this->redirect(['index'], 'section');
+			$this->redirect(['index']);
 		}
 		else {
 			$this->render('create', ['model'=>$model]);
@@ -93,7 +90,7 @@ class Section extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new SectionModel();
+		$model = new ScheduleModel();
 		$model = $model->getByID($id);
 		$this->render('view', ['model'=>$model]);
 	}
@@ -102,9 +99,9 @@ class Section extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new SectionModel();
+		$model = new ScheduleModel();
 		$model = $model->getByID($id)->delete();
-		$this->redirect(['index'], $this->name);
+		$this->redirect(['index']);
 	}
 	
 }

@@ -4,13 +4,14 @@ namespace backend\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\ScheduleModel;
+use backend\models\TTModel;
+use backend\models\SearchModels\TTSearchModel;
 
 /**
- * Rasp - backend\controllers Контроллер
+ * TT - backend\controllers Контроллер
  */
-/// Rasp - backend\controllers Контроллер
-class Rasp extends Controller
+/// TT - backend\controllers Контроллер
+class TT extends Controller
 {
 
 	/**
@@ -43,28 +44,24 @@ class Rasp extends Controller
 			]
 		];
 	}
-	
-	/**
-	 * action - действие по-умолчанию
-	 */
-	public function action(){
-		$model = new ScheduleModel();
-		$this->render('index', ['model'=>$model]);
-	}
 
 	/**
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$model = new ScheduleModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new TTSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	/**
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new ScheduleModel();
+		$model = new TTModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
@@ -79,7 +76,7 @@ class Rasp extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new ScheduleModel();
+		$model = new TTModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
@@ -93,7 +90,7 @@ class Rasp extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new ScheduleModel();
+		$model = new TTModel();
 		$model = $model->getByID($id);
 		$this->render('view', ['model'=>$model]);
 	}
@@ -102,7 +99,7 @@ class Rasp extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new ScheduleModel();
+		$model = new TTModel();
 		$model = $model->getByID($id)->delete();
 		$this->redirect(['index']);
 	}

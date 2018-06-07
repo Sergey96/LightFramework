@@ -5,12 +5,13 @@ namespace backend\controllers;
 use engine\WebApp;
 use engine\Controller\Controller;
 use backend\models\ArticleModel;
+use backend\models\SearchModels\ArticleSearchModel;
 
 /**
- * Articles - backend\controllers Контроллер
+ * Article - backend\controllers Контроллер
  */
-/// Articles - backend\controllers Контроллер
-class Articles extends Controller
+/// Article - backend\controllers Контроллер
+class Article extends Controller
 {
 
 	/**
@@ -43,21 +44,17 @@ class Articles extends Controller
 			]
 		];
 	}
-	
-	/**
-	 * action - действие по-умолчанию
-	 */
-	public function action(){
-		$model = new ArticleModel();
-		$this->render('index', ['model'=>$model]);
-	}
 
 	/**
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$model = new ArticleModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new ArticleSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	/**
@@ -65,7 +62,11 @@ class Articles extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new ArticleModel();
-		if($model->load(WebApp::$request->post())){
+		$model->load(WebApp::$request->post());
+		//print_r($model->getErrorsLoad());
+		//exit();
+		if(!$model->getErrorsLoad()){
+			$model->setNotNew();
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -80,13 +81,7 @@ class Articles extends Controller
 	 */
 	public function actionCreate(){
 		$model = new ArticleModel();
-		$model->load(WebApp::$request->post());
-		//print_r($model);
-		//print_r($model->getErrorsLoad());
-		//exit();
-		if(!$model->getErrorsLoad()){
-			$model->owner = WebApp::$user->name;
-			$model->created = date("Y-m-d H:i:s");
+		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

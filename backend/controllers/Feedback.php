@@ -4,7 +4,8 @@ namespace backend\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use frontend\models\FeedbackModel;
+use backend\models\FeedbackModel;
+use backend\models\SearchModels\FeedbackSearchModel;
 
 /**
  * Feedback - backend\controllers Контроллер
@@ -43,21 +44,17 @@ class Feedback extends Controller
 			]
 		];
 	}
-	
-	/**
-	 * action - действие по-умолчанию
-	 */
-	public function action(){
-		$model = new FeedbackModel();
-		$this->render('index', ['model'=>$model]);
-	}
 
 	/**
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$model = new FeedbackModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new FeedbackSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
 	/**

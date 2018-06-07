@@ -5,10 +5,16 @@ namespace backend\controllers;
 use engine\WebApp;
 use engine\Controller\Controller;
 use backend\models\AssignRolesModel;
+use backend\models\SearchModels\AssignSearchModel;
 
+/**
+ * Assign - backend\controllers Контроллер
+ */
+/// Assign - backend\controllers Контроллер
 class Assign extends Controller
 {
-/**
+
+	/**
 	 * Права доступа
 	 */
 	public function accessRights()
@@ -18,12 +24,17 @@ class Assign extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete'],
-					'roles' => ['dev', 'admin'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error'],
+					'roles' => ['admin'],
 				],
 				[
-					'allow' => false,
-					'actions' => ['index', 'create', 'update', 'view', 'delete'],
+					'allow' => true,
+					'actions' => ['login', 'error'],
+					'roles' => ['?'],
+				],
+				[
+					'allow' => true,
+					'actions' => ['index', 'view', 'error'],
 					'roles' => ['*'],
 				]
 			],
@@ -33,16 +44,22 @@ class Assign extends Controller
 			]
 		];
 	}
-	public function action(){
-		$model = new AssignRolesModel();
-		$this->render('index', ['model'=>$model]);
-	}
-	
+
+	/**
+	 * action - Главная страница
+	 */
 	public function actionIndex(){
-		$model = new AssignRolesModel();
-		$this->render('index', ['model'=>$model]);
+		$searchModel = new AssignSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('index', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 	
+	/**
+	 * action - Обновить запись
+	 */
 	public function actionUpdate($id){
 		$model = new AssignRolesModel();
 		if($model->load(WebApp::$request->post())){
@@ -55,10 +72,12 @@ class Assign extends Controller
 		}
 	}
 	
+	/**
+	 * action - Создать запись
+	 */
 	public function actionCreate(){
 		$model = new AssignRolesModel();
-		$model->load(WebApp::$request->post());
-		if(!$model->getErrorsLoad()){
+		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}
@@ -67,12 +86,18 @@ class Assign extends Controller
 		}
 	}
 	
+	/**
+	 * action - Просмотреть запись
+	 */
 	public function actionView($id){
 		$model = new AssignRolesModel();
 		$model = $model->getByID($id);
 		$this->render('view', ['model'=>$model]);
 	}
 	
+	/**
+	 * action - Удалить запись
+	 */
 	public function actionDelete($id){
 		$model = new AssignRolesModel();
 		$model = $model->getByID($id)->delete();
