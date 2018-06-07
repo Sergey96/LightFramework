@@ -2,6 +2,8 @@
 
 namespace engine\Components;
 
+use engine\base\Exceptions as Exceptions;
+
 class URLManager
 {
 	public $Controller;
@@ -16,58 +18,90 @@ class URLManager
 	}
 	
 	public function parseUrl(){
-		if(preg_match_all('/\//', $this->URL, $c)){
-			if(strpos($this->URL, '?', 1)==(!false))
-				$this->URL = substr($this->URL, 0, strpos($this->URL, '?', 1));
-				
+		if($this->URL){
+			if(preg_match_all('/^[\/]*[a-z]+/', $this->URL, $matches)){
+				$controller = $matches[0][0];
+				if(preg_match_all('/[a-z]+/', $controller, $matches)){
+					$this->Controller = $this->getFirstUpper($matches[0][0]);
+				}
+			}
+			else  {
+				$this->Controller = $this->config['controller']['default'];
+				$this->Action = 'index';
+			}
+			if(preg_match_all('/^[\/]*[a-z]+[\/]+[a-z0-9]+/', $this->URL, $matches)){
+				$action = $matches[0][0];
+					
+				if(preg_match_all('/[a-z0-9]+$/', $action, $matches)){
+					$this->Action = $matches[0][0];
+				}
+			}
+			else  {
+				$this->Action = 'index';
+			}
 		}
-		
-		if($this->URL=='/'){
+		else {
 			$this->Controller = $this->config['controller']['default'];
+			$this->Action = 'index';
 		}
-		else{
-		
-			$this->Controller = $this->getControllerName();
-			$this->Action = $this->getActionName();
-		}
-		$this->Controller = strtoupper(substr($this->Controller, 0, 1)).substr($this->Controller, 1);
 	}
 	
-	private function getControllerName(){
-		$url = $this->URL;
-		$count = preg_match_all('/\//', $url, $c);
-		if($count < 2){
-			$count = preg_match_all('/\/.*/', $url, $c);
-			$controller = str_replace('/', '', $c[0])[0];
+	public function parseUrl2(){
+		print_r($this->URL."\n");
+		//if($this->URL)
+		while($this->URL[0]=='/'){
+			$this->URL = substr($this->URL, 1, strlen($this->URL));
 		}
-		if($count >= 2){
-			$first = strpos($url, '/', 1);
-			$controller = substr($url, 1, $first-1);
+		if(!$this->URL){
+			$this->Controller = $this->config['controller']['default'];
+			$this->Action = 'index';
 		}
-		return $controller;
+		else
+		{
+			while($this->URL && $this->URL[0]!='/'){
+				if(is_string($this->URL[0])){
+					$this->Controller .= $this->URL[0];
+					$this->URL = substr($this->URL, 1, strlen($this->URL));
+				}
+				else
+					throw new  Exceptions\URLNotFoundException($_SERVER['REQUEST_URI']);
+			}
+			if($this->URL){
+				while($this->URL[0]=='/'){
+					$this->URL = substr($this->URL, 1, strlen($this->URL));
+				}
+				while($this->URL && $this->URL[0]!='/'){
+					if(is_string($this->URL[0])){
+						$this->Action .= $this->URL[0];
+						$this->URL = substr($this->URL, 1, strlen($this->URL));
+					}
+					else
+						throw new  Exceptions\URLNotFoundException($_SERVER['REQUEST_URI']);
+				}
+			}
+			else
+			{
+				$this->Action = 'index';
+			}
+		}
+		
+		if(!preg_match_all('/^[a-zA-Z]*$/', $this->Controller)) 
+			throw new  Exceptions\URLNotFoundException($_SERVER['REQUEST_URI']);
+		if(!preg_match_all('/^[a-zA-Z]*$/', $this->Action)) 
+			throw new  Exceptions\URLNotFoundException($_SERVER['REQUEST_URI']);
+		$this->Controller = $this->getFirstUpper($this->Controller);
+		print_r($this);
+		//$this->Action = $this->getFirstUpper($this->Action);
+	}
+	
+	private function getFirstUpper($input){
+		$string = mb_strtoupper(mb_substr($input, 0, 1), 'UTF-8');
+		$string .= mb_substr($input, 1, strlen($input)-1, 'UTF-8');
+		return $string;
 	}
 	
 	public function getURL(){
 		return $_SERVER['HTTP_HOST'];
 	}
 	
-	
-	private function getActionName(){
-		$url = $this->URL;
-		$count = preg_match_all('/\//', $url, $c);
-		if($count > 1){
-			$replace = '/'.$this->Controller.'/';
-			$Action = str_replace($replace, '', $url);
-			$first = strpos($Action, '/');
-			
-			if($first == 0){}
-			else
-				$Action = substr($Action, 0, $first);
-			return $Action;
-		}
-		else return "";
-	} 
-	
 }
-
-?>
