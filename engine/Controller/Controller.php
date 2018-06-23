@@ -38,7 +38,7 @@ class Controller
 	public function __construct($URL){
 		$this->Action = mb_strtolower($URL->Action, 'UTF-8');
 		$this->URL = "http://".$URL->getURL();
-		$this->Layout = 'main.php';
+		$this->Layout = 'main';
 		$this->Name = strtolower($URL->Controller);
 	}
 
@@ -68,10 +68,10 @@ class Controller
 	public function error($exception){
 		
 		$this->render('error', [
-			'title' => $exception->getTitle(),
+			'title' => $exception->getMessage(),
 			'message'=>$exception->getMessage(),
 			'code'=>$exception->getCode(),
-			'objError'=>$exception->getElement(), 
+			'objError'=>$exception->getFile(), 
 			'file'=>$exception->getFile(),
 			'line'=>$exception->getLine(),
 			'exception'=>$exception
@@ -85,20 +85,21 @@ class Controller
      * @return string
      */
 	public function selectAction(){
+		$right = WebApp::$controller->accessRights();
+		if(!WebApp::$user->can() && WebApp::$user->isRule('*')){
+			throw new Exceptions\ForbiddenException($this->Action);
+		}
+		if(!WebApp::$user->can()){
+			$this->redirect([$right['redirect']['view']], $right['redirect']['controller']);
+		}
 		$action = $this->getActionMethod();
 		$Metods = $this->getMethods();
+		
 		$key = array_search($action, $Metods);
 		if($key === false){
 			throw new Exceptions\ActionNotFoundException($this->Action);
 		} 
 		else {
-			$right = WebApp::$controller->accessRights();
-			if(!WebApp::$user->can() && WebApp::$user->isRule('*')){
-				throw new Exceptions\ForbiddenException($this->Action);
-			}
-			if(!WebApp::$user->can())
-			
-				$this->redirect([$right['redirect']['view']], $right['redirect']['controller']);
 			
 			$params = $this->getArgsForMetod($action);	
 			$count = count($params);
@@ -118,28 +119,19 @@ class Controller
      * @return string
      */
 	protected function render($view, $param = array()){
-		$viewObj = new View($view, $this->ViewPath, $this->Name, $this->URL);
-		$layout = $this->ViewPath.'/layout/'.$this->Layout;
-		ob_start();
-		try{
-			$content = $viewObj->render($view, $param);
-			$this->title = $viewObj->getTitle();
-			$this->params = $viewObj->getParams();
-			require_once $layout;
-		}
-		catch(\Exception $e){
-			$content = '';
-			ob_end_clean();
-			throw $e;
-		}
-		$contents = ob_get_clean();
-		print_r($contents);
+		$viewObj = new View($this->ViewPath . $this->Name, $this->URL);
+		$layoutObj = new View($this->ViewPath . '/layout/', $this->URL);
+		$content = $viewObj->render($view, $param);
+		echo $layoutObj->render($this->Layout, [
+				'content'=>$content,
+				'title'=>$viewObj->getTitle(),
+				'params'=>$viewObj->getParams()
+			]);
 	}
 	
 	protected function redirect($param, $controller = false){
+		print_r($controller);
 		if($controller===false)
-			$controller = $this->Name;
-		else
 			$controller = $this->Name;
 		$code = '200 OK';
 		if(isset($param['code']))
@@ -206,24 +198,7 @@ class Controller
 	private function getMethods(){
 		return get_class_methods($this);
 	}
-
 	
-	public static function startHead()
-    {
-		View::startHead();
-    }
-	
-	public static function endHead()
-    {
-		$Asset = '\\'.WebApp::$config['namespace'].'\\assets\\AppAsset';
-		View::endHead($Asset);
-    }
-	
-	public static function endBody()
-    {
-		$Asset = '\\'.WebApp::$config['namespace'].'\\assets\\AppAsset';
-		View::endBody($Asset);
-    }
 }
 
 ?>
