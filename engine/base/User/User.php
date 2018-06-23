@@ -15,11 +15,13 @@ class User extends \engine\db\ActiveRecord
 	public $created;
 	public $avatar;
 	
+	public $token;
 	public static $attributeLabels =
 	[
 		'id' => ['ID', 'int', 'autoincrement'],
 		'name' => ['NAME', 'text', 'required'],
 		'role' => ['ROLE', 'text', 'null'],
+		'token' => ['TOKEN', 'text', 'null'],
 		'created' => ['CREATED', 'datetime', 'required'],
 		'avatar' => ['AVATAR', 'text', 'required']
 	];
@@ -39,12 +41,9 @@ class User extends \engine\db\ActiveRecord
 		$model = new UsersSearchModel();
 		$login = $this->getSessionValue('user');
 		if($login){
-			$models = $model->findName($this->session['user']);
+			$models = $model->findName($login);
 			if(isset($models[0]))
 				$model = $models[0];
-			//print_r($model);
-			//exit();
-			//$model = $model->getByField('name', $this->session['user']);
 			if($this->compareString($model->token, $this->session['token'])){
 				$this->load($model->getDataAsArray(false));
 			}
@@ -88,7 +87,6 @@ class User extends \engine\db\ActiveRecord
 	}
 	
 	public function isRule($rule){
-		//var_dump($this->roles);
 		$method = array_search($rule, $this->roles);
 		if($method===false) 
 			return false;
@@ -96,22 +94,17 @@ class User extends \engine\db\ActiveRecord
 	}
 	
 	public function login($user){
-		$class = get_parent_class($user);
-		$model = new $class();
-		$model = $model->getByField('name', $user->login);
-		var_dump($model->password);
-		var_dump($user->password);
-		var_dump(md5((string)$user->password));
-		//exit();
+		$model = new UsersSearchModel();
+		$models = $model->findName($user->login);
+		if(isset($models[0]))
+			$model = $models[0];
+			
 		if(AccessManager::decryptPassword($user->password, $model->password)){
-
 			$this->load($model->getDataAsArray(false));
 			$this->auth();
 			$model->token = $_SESSION['token'];
 			$model->setNotNew();
 			$model->save();
-			//print_r($model);
-			//exit();
 			return true;
 		}
 		$user->error = 'Неверный логин или пароль';
@@ -128,11 +121,11 @@ class User extends \engine\db\ActiveRecord
 		print_r($_SESSION);
 	}
 	
-	public function checkPassword($authPassword, $tablePassword){
+	private function checkPassword($authPassword, $tablePassword){
 		return AccessManager::decryptPassword($authPassword, $tablePassword);
 	}
 	
-	public function compareString($authPassword, $tablePassword){
+	private function compareString($authPassword, $tablePassword){
 		return strcmp($authPassword, $tablePassword) === 0;
 	}
 
