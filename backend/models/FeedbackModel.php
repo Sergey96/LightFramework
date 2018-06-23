@@ -1,27 +1,12 @@
 <?php
 
 namespace backend\models;
-
-/**
- * This is the model class for table "{{%feedback}}".
- *
- * @property int $id
- * @property text $sender
- * @property text $sender_email
- * @property text $theme
- * @property text $content
- * @property datetime $created
- * @property int $readed
-
- */
  
 class FeedbackModel extends \engine\DB\ActiveRecord
 {
 	public $Table = 'feedback';
-    /**
-     * @inherited
-     *
-     */
+	
+	// Поля таблицы
 	public $id;
 	public $sender;
 	public $sender_email;
@@ -30,10 +15,7 @@ class FeedbackModel extends \engine\DB\ActiveRecord
 	public $created;
 	public $readed;
 	
-	/**
-     * @inherited
-     *
-     */
+	// Текстовые метки полей и правила валидации
 	public static $attributeLabels =
 	[
 		'id' => ['ID', 'int', 'autoincrement'],
