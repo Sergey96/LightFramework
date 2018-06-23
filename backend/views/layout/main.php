@@ -4,7 +4,9 @@ use engine\WebApp;
 use engine\widgets\Breadcrumbs;
 use backend\assets\AppAsset;
 
-$this->params['breadcrumbs'] = array();
+$this->title = $title;
+$this->params = $params;
+
 ?>
 
 <!DOCTYPE html>
@@ -16,10 +18,10 @@ $this->params['breadcrumbs'] = array();
 <body>
 	<div id="page">
 		<div id="sidebar">
-			<p><?= WebApp::$user->name ?><a href='/home/logout'>Выход</a></p>
+			<a class="sidebar_title" href="http://admin.light.edu">LIGHT FRAMEWORK</a>
 			<ul class='sidebar-menu'>
 				
-			  <li class='sidebar-header'>MAIN NAVIGATION</li>
+			  <li class='sidebar-header'></li>
 			  <li>
 				<a href='#'><span>HOME</span></a>
 				<ul class='sidebar-submenu'>
@@ -66,7 +68,18 @@ $this->params['breadcrumbs'] = array();
 		<div id="wrapper">
 			<div id="wrapper-title">
 				<div id="breadcrumbs">
-					<?php Breadcrumbs::View($this->params['breadcrumbs']);?>
+					<div class='col-xs-9'>
+						<?php Breadcrumbs::View($this->params['breadcrumbs']);?>
+					</div>
+					<?php 
+						if(!WebApp::$user->name){ ?>
+							<div class='login-box col-xs-3'><a href='/home/login'>Войти</a></div>
+					<?php 
+						} else { ?>
+							<div class='logout-box col-xs-3'>
+								<a href='/home/logout'>Выход: </a><span class='logout-user'><?= WebApp::$user->name ?><span>
+							</div>
+					<?php } ?>
 				</div>
 				<div id="content-title">
 					<div id="content-title-string">
@@ -81,18 +94,6 @@ $this->params['breadcrumbs'] = array();
 				</div>
 			</div>
 			<div id="content">
-				<!-- FILTERS -->
-				<?php 
-				/*
-					$FILTER = new Filter();
-					print_r($FILTER->printFilters(array(	
-											"category"=>"Категория", 
-											"key"=>"Ключ", 
-											"value"=>"Значение"
-										)));
-										*/
-				?>
-				
 				<div id="data">
 					<!-- TABLE -->
 					<?php echo $content;?>

@@ -9,7 +9,6 @@ use engine\widgets\ActiveForm\ActiveForm;
 	<?php $form = ActiveForm::begin(); ?>
 		<?= $form->field($model, 'id')->textInput() ?>
 		<?= $form->field($model, 'name')->textarea() ?>
-		<?= $form->field($model, 'password')->textInput() ?>
 		<?= $form->field($model, 'token')->textarea() ?>
 		<?= $form->field($model, 'created')->textInput() ?>
 		<?= $form->field($model, 'avatar')->textarea() ?>
