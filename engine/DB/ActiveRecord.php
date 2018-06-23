@@ -5,6 +5,7 @@ namespace engine\DB;
 use engine\WebApp;
 use engine\models\Model;
 use engine\base\Exceptions as Exceptions;
+use engine\base\Validator\Validator;
 
 /// Класс записи в БД
 class ActiveRecord extends Model
@@ -51,14 +52,18 @@ class ActiveRecord extends Model
      */
 	public function save($validate = true){
 		if($this->validate($validate)){
+			// Создание строки запроса для сохранения
 			$Query = $this->generateQuery();
-			
-			$stmt = $this->prepare($Query);
+			// Создание подготовленного PDO запроса
+			$stmt = self::prepare($Query);
+			// Выполнение подготовленного запроса
 			$stmt->execute($this->getDataAsArray($this->isNew));	
+			// Проверка ошибок
 			
 			$errors = $stmt->errorInfo();
 			if($errors[1])
 				throw new Exceptions\DatabaseException($errors[2]);
+			else return true;
 		}
 		else throw new Exceptions\ErrorFieldTypeException($this->fieldsErrorType);
 	}
@@ -179,38 +184,19 @@ class ActiveRecord extends Model
 	}
 	
 	protected function validate($validate){
-		
 		if($validate){
 			$issetErrors = false;
 			foreach($this::$attributeLabels as $field => $properties){
 				if(strlen($this->$field)==0 && $properties[2]=='required'){
 					throw new Exceptions\EmptyRequiredFieldException($field);
 				} 
-				else continue;
 				
-				if($properties[1]=='int' && is_numeric($this->$field)){
-					continue;
-				} 
-				else throw new Exceptions\InvalidDataException($field);
-				
-				if($properties[1]=='text' && is_string($this->$field)){
-					continue;
-				} 
-				else throw new Exceptions\InvalidDataException($field);
-				
-				if($properties[1]=='datetime' && validateDate($this->$field)){
-					continue;
-				} 
-				else throw new Exceptions\InvalidDataException($field);
+				if(strlen($this->$field)!=0 && !Validator::validate($properties[1], $this->$field))
+					throw new Exceptions\InvalidDataException($field);	
 			}
 			return true;
 		}
 		else return true;
-	}
-	
-	public function validateDate($date, $format = 'Y-m-d H:i:s'){
-		$d = date_parse_from_format($format, $date);
-		return $d['warning_count'] || $d['error_count'];
 	}
 
 	/*
@@ -228,8 +214,8 @@ class ActiveRecord extends Model
 	
 	public function findOne($id){
 		$query = "SELECT * FROM ".$this->Table." WHERE id = :id";
-		$stmt = $this->prepare($query);
-		$aa = $stmt->execute(['id'=>$id]);
+		$stmt = self::prepare($query);
+		$result = $stmt->execute(['id'=>$id]);
 		$row = $stmt->fetchAll(\PDO::FETCH_CLASS, get_class($this));
 		
 		$errors = $stmt->errorInfo();
@@ -240,6 +226,7 @@ class ActiveRecord extends Model
 				$row[0]->isNew = 0;
 				return $row[0];
 			}
+			else throw new Exceptions\ModelNotFoundException($id);
 		}
 	}
 	
@@ -247,7 +234,7 @@ class ActiveRecord extends Model
 		return WebApp::$connection->executeQuery($query);
 	}
 	
-	protected function prepare($query){
+	protected static function prepare($query){
 		return WebApp::$connection->prepare($query);
 	}
 	
