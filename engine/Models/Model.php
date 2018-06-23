@@ -4,6 +4,7 @@ namespace engine\Models;
 
 use engine\WebApp;
 use engine\base\Exceptions as Exceptions;
+use engine\base\Validator\Validator;
 /**
  *  Базовый Класс Модели
 */
@@ -35,21 +36,21 @@ class Model
 			throw new \Exception("Не Удается загрузить данные в модель");
 		$class = get_called_class();
 		$rules = $class::$attributeLabels;
+		if(count($array)==0)
+			return false;
 		foreach($rules as $k => $v){
 			if($rules[$k][2] == 'required' && !isset($array[$k])){
 				$this->ErrorLoad = 'Отсутствует обязательное поле: '.$k;
 				return false;
 			}
 			if(isset($array[$k]) && strlen($array[$k])!=0){
-				if(($rules[$k][1] == 'text' || $rules[$k][1] == 'datetime') && !is_string($array[$k])){
-					$this->ErrorLoad = 'Поле не соответствует формату: '.$k.' => '.$rules[$k][1];
+				if(Validator::validate($rules[$k][1], $array[$k])){
+					$this->$k = htmlspecialchars($array[$k]);
+				}
+				else {
+					$this->ErrorLoad = 'Поле не соответствует формату "'.$rules[$k][1].'": '.$k.' => '.$rules[$k][1];
 					return false;
 				}
-				if($rules[$k][1] == 'int' && !is_numeric($array[$k])){
-					$this->ErrorLoad = 'Поле не соответствует формату: '.$k.' => '.$rules[$k][1];
-					return false;
-				}
-				$this->$k = $array[$k];
 			}
 		}
 		if(isset($this->id))
@@ -57,38 +58,16 @@ class Model
 		return true;
 	}
 	
+	public function validateDate($date, $format = 'Y-m-d H:i:s'){
+		$d = date_parse_from_format($format, $date);
+		return $d['warning_count'] || $d['error_count'];
+	}
+	
 	public function getFieldList($rules){
 		$fields = array();
 		foreach($rules as $k => $v)
 			$fields[] = $k;
 		return $fields;
-	}
-	
-	/**
-	 * Загрузить данные в модель используя список полей из БД
-	*/
-	public function loadData($array){
-		if(!is_array($array))
-			throw new \Exception("Не Удается загрузить данные в модель");
-		$this->getTableColumns();
-		
-		
-		$countLoadedElem = 0;
-		foreach($this->attributes_ as $k => $v){
-			if(isset($array[$k])){
-				$this->attributes_[$k]->Value = $array[$k];
-				$countLoadedElem++;
-			}
-		}
-		print_r($this);
-		print_r($array);
-		exit();
-		if(count($countLoadedElem)!=count($array)){
-			return false;
-		}
-		print_r($this);
-		exit();
-		return true;
 	}
 	
 	/**
