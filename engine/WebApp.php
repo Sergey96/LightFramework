@@ -53,18 +53,12 @@ class WebApp
 	 */
 	public function __construct($config){
 		session_start();
-		if(!isset($_SESSION['start_time']))
-			$_SESSION['start_time'] = microtime();
-		set_error_handler("\\engine\\WebApp::myErrorHandler");
+		set_error_handler("\\engine\\WebApp::LightErrorHandler");
 		WebApp::$config = $config;
 		WebApp::$request = new Request($_GET, $_POST);
 		WebApp::$logger = new Logger();
-		WebApp::$connection = new DataBase($config['db']);
 		WebApp::$home = $this->levelUpDir($this->levelUpDir($config['home']));
-		WebApp::$user = new User();		//exit();
 		$this->run();
-		$_SESSION['end_time'] = microtime();
-		print_r($_SESSION['end_time'] - $_SESSION['start_time']);
 	}
 	
 	/**
@@ -74,8 +68,10 @@ class WebApp
 	 * В случае неудачи выводим красивую страницу ошибки
 	 */
 	private function run(){
-		try {
+		try {	
 			$this->URL = new URLManager(WebApp::$config);
+			WebApp::$connection = new DataBase(self::$config['db']);
+			WebApp::$user = new User();		//exit();
 			switch($this->URL->Controller){
 				case "Gii": $control = "engine\\components\\Gii\\Gii"; break;
 				default : $control = self::$config['namespace']."\\controllers\\".$this->URL->Controller; break;
@@ -90,11 +86,14 @@ class WebApp
 			WebApp::$controller->selectAction();
 		}
 		catch(\Exception $e){
-			$control = "engine\\controller\\Controller";
+			$control = "engine\\controller\\Error";
 			WebApp::$controller = new $control($this->URL);
-			WebApp::$controller->ViewPath = '../../'.WebApp::$config['namespace'].'/views/';
-			WebApp::$controller->Name = 'home';
-			WebApp::$controller->error($e);
+			WebApp::$controller->actionError($e);
+		}
+		catch(\Error $e){
+			$control = "engine\\controller\\Error";
+			WebApp::$controller = new $control($this->URL);
+			WebApp::$controller->actionError($e);
 		}
 	}
 	
@@ -103,7 +102,7 @@ class WebApp
 	 * - Ловим все исключения которые можем и отправляем на свою страницу ошибки
 	 * - FATAL_ERROR Ловить не получается
 	 */
-	public static function myErrorHandler($errno, $errstr, $errfile, $errline)
+	public static function LightErrorHandler($errno, $errstr, $errfile, $errline)
 	{
 		if (!(error_reporting() & $errno)) {
 			
