@@ -8,7 +8,7 @@ $this->params['breadcrumbs'][] = "О Кафедре";
 ?>
 <div class="articles-view">
 	<?php
-	$list = $dataProvider->exe(get_parent_class($searchModel));
+	$list = $dataProvider->exe($searchModel);
 	foreach($list as $article){
 		echo $this->render('newbox', ['article'=>$article]);
 	}

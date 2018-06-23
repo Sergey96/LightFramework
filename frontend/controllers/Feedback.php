@@ -23,7 +23,7 @@ class Feedback extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['povtias', 'error'],
+					'actions' => ['povtias', 'error', 'create', 'logout'],
 					'roles' => ['admin'],
 				],
 				[
@@ -33,7 +33,7 @@ class Feedback extends Controller
 				],
 				[
 					'allow' => true,
-					'actions' => ['index', 'view', 'error'],
+					'actions' => ['index', 'view', 'create', 'error', 'send'],
 					'roles' => ['*'],
 				],
 				[
@@ -54,24 +54,14 @@ class Feedback extends Controller
 	 */	
 	public function actionCreate(){
 		$model = new FeedbackModel();
-		$model->load(WebApp::$request->post());
-		print_r($model->getErrorsLoad());
-		//exit();
-		if(!$model->getErrorsLoad()){
+		if($model->load(WebApp::$request->post())){
 			$model->created = date("Y-m-d H:i:s");
 			$model->save();
-			$this->redirect(['send']);
+			$this->render('send');
 		}
 		else {
 			$this->render('create', ['model'=>$model]);
 		}
-	}
-	
-	/**
-	 * action - Написать письмо
-	 */	
-	public function actionSend(){
-		$this->render('send');
 	}
 	
 }

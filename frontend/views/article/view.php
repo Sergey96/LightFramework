@@ -1,17 +1,19 @@
 <?php
 
-use engine\widgets\GridView\GridView;
+use engine\widgets\NEWS\NEWS;
 
-$this->title = 'Статьи';
 $this->params['breadcrumbs'][] = ['label'=>'Главная', 'url'=>$this->HomeURL];
-$this->params['breadcrumbs'][] = "Статьи";
+$this->params['breadcrumbs'][] = ['label'=>'Статьи', 'url'=>$this->HomeURL.'/article'];
+$this->params['breadcrumbs'][] = 'О кафедре';
 ?>
 <div class="articles-view">
+	
 	<?php
-	$list = $dataProvider->exe($searchModel);
-	foreach($list as $article){
-		print_r($article->content);
-		$this->title = $article->title;
-	}
+	$NEWS = new NEWS([
+		'dataProvider'=>$dataProvider,
+		'searchModel'=>$searchModel,
+		'template'=>'standart'
+	]);
+	$this->title = $NEWS->title;
 	?>	
 </div>

@@ -1,11 +1,4 @@
-<?php
-
-use yii\helpers\Html;
-use engine\widgets\ActiveForm\ActiveForm;
-
-?>
-<div class="newbox">
-	
+<div class="newbox col-xs-10">
 	<div class='box-title'>
 		<p><?= $article->title ?></p>
 	</div>
@@ -24,3 +17,4 @@ use engine\widgets\ActiveForm\ActiveForm;
 		</div>
 	</div>
 </div>
+<div class='clear col-xs-2'></div>

@@ -48,9 +48,13 @@ class Rasp extends Controller
 	/**
 	 * action - действие по-умолчанию
 	 */
-	public function action(){
-		$model = new ScheduleModel();
-		$this->render('index', ['model'=>$model]);
+	public function actionIndex(){
+		$searchModel = new ScheduleSearchModel();
+		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$this->render('view', [
+			'dataProvider'=>$dataProvider,
+			'searchModel'=>$searchModel
+		]);
 	}
 
 	/**
@@ -61,7 +65,8 @@ class Rasp extends Controller
 		$dataProvider = $searchModel->search(WebApp::$request->get());
 		$this->render('view', [
 			'dataProvider'=>$dataProvider,
-			'searchModel'=>$searchModel
+			'searchModel'=>$searchModel, 
+			'sort'=>'по группам'
 		]);
 	}
 	

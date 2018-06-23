@@ -2,9 +2,9 @@
 
 use engine\widgets\GridView\GridView;
 
-$this->title = 'Статьи';
+$this->title = 'Расписание '.$sort;
 $this->params['breadcrumbs'][] = ['label'=>'Главная', 'url'=>$this->HomeURL];
-$this->params['breadcrumbs'][] = "Статьи";
+$this->params['breadcrumbs'][] = "Расписание";
 ?>
 <div class="articles-view">
 	<?php
