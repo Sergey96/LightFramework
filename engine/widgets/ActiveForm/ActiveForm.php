@@ -5,6 +5,7 @@ namespace engine\widgets\ActiveForm;
 use engine\WebApp;
 use engine\widgets\ActiveForm\Field;
 use engine\base\Exceptions as Exceptions;
+use engine\views\View;
 
 /**
  * Виджет ActiveForm 
@@ -13,42 +14,39 @@ use engine\base\Exceptions as Exceptions;
 /// Виджет ActiveForm 
 class ActiveForm 
 {
-	private static $URL;
-	public $form;
-	private static $tplBegin = "
-	<form name='{name}' action='{action}' method='{method}'>
-	";
-	private static $begin;
-	private static $params;
-	public $template = "
-	<div id='' class='{class}'>
-		<div class='input-label'>{label}</div>
-		<div class='input-field'>{field}</div>
-	</div>
-	";
+	// Каталог представлений
+	public static $ViewPath = '../../engine/widgets/ActiveForm/views/';
 	
-	private static function replaceParam($name, $params, $default){
-		$find = '{'.$name.'}';
-		if(isset($params[$name]))
-			ActiveForm::$begin = str_replace($find, $params[$name], ActiveForm::$begin);
-		else 
-			ActiveForm::$begin = str_replace($find, $default, ActiveForm::$begin);
-	}
+	public static $name;
+	public static $action;
+	public static $method;
 	
 	public static function begin($params = array()){
-		ActiveForm::$begin = ActiveForm::$tplBegin;
-		ActiveForm::$URL = $_SERVER['REQUEST_URI'];
-		ActiveForm::replaceParam('name', $params, WebApp::$controller->Action);
-		ActiveForm::replaceParam('action', $params, ActiveForm::$URL);
-		ActiveForm::replaceParam('method', $params, 'post');
-		ActiveForm::$params = $params;
-
-		echo ActiveForm::$begin;
+		self::$name = self::getParam('name', $params, WebApp::$controller->Action);
+		self::$action = self::getParam('action', $params, $_SERVER['REQUEST_URI']);
+		self::$method = self::getParam('method', $params, 'post');
+	
+		$viewObj = new View(self::$ViewPath, WebApp::$controller->URL);
+		$form = $viewObj->render('form', [
+					'name'=>self::$name,
+					'action'=>self::$action,
+					'method'=>self::$method,
+					'_csrf'=>WebApp::$user->token,
+				]);
+			
+		echo $form;
 		return new ActiveForm();
 	}
 	
 	public static function end(){
 		echo "</form>\n";
+	}
+	
+	private static function getParam($name, $params, $default){
+		if(isset($params[$name]))
+			return $params[$name];
+		else 
+			return $default;
 	}
 	
 	public function field($model, $fieldName, $param = array()){
