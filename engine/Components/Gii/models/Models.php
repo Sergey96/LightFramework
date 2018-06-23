@@ -100,14 +100,20 @@ class Models extends Model
 		$stringToReplaceLabels = '';
 		$stringToReplacePHPDocsFields = '';
 		$counter = 0;
+		print_r($this->attributes_);
+		exit();
 		foreach($this->attributes_ as $column){
 			$column->Type == "int(11)" ? $type = "int" : $type = $column->Type;
 			$counter++;
 			$stringToReplaceFields .= $this->getFieldsAsString($column->Field);
 			$stringToReplacePHPDocsFields .= $this->getPHPDocsAsString($column->Field, $type);
 			
-			if($column->Null=='NO')
-				$stringToReplaceLabels .= $this->getPropertiesAsString($column->Field, mb_strtoupper($column->Field), $type, 'required');
+			if($column->Null=='NO'){
+				if($column->Extra=='auto_increment')
+					$stringToReplaceLabels .= $this->getPropertiesAsString($column->Field, mb_strtoupper($column->Field), $type, 'autoincrement');
+				else
+					$stringToReplaceLabels .= $this->getPropertiesAsString($column->Field, mb_strtoupper($column->Field), $type, 'required');
+				}
 			else
 				$stringToReplaceLabels .= $this->getPropertiesAsString($column->Field, mb_strtoupper($column->Field), $type);
 			
