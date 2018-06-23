@@ -9,7 +9,7 @@ class ActionNotFoundException extends \engine\base\Exceptions\BaseException
 
 	public function __construct($element)
 	{
-		parent::__construct('Страница  не найдена');
+		parent::__construct('Страница  не найдена "'.$element.'"');
 		$this->element = $element;
 		$this->code = 404;
 		$this->title = 'Страница  не найдена';

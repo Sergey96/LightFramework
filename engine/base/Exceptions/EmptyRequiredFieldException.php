@@ -9,7 +9,7 @@ class EmptyRequiredFieldException extends \engine\base\Exceptions\BaseException
 
 	public function __construct($element)
 	{
-		parent::__construct('Запрашиваемое поле не содержит данных');
+		parent::__construct('Запрашиваемое поле не содержит данных "'.$element.'"');
 		$this->element = $element;
 		$this->code = '';
 		$this->title = $this->message;
