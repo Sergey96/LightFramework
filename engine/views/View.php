@@ -1,6 +1,8 @@
 <?php
 
 namespace engine\views;
+
+use engine\WebApp;
 use engine\base\Exceptions as Exceptions;
 
 class View
@@ -14,10 +16,8 @@ class View
 	public $HomeURL;
 	public $content;
 	
-	public function __construct($name, $viewPath, $controller, $home){
-		$this->Name = $name; 
+	public function __construct($viewPath, $home){
 		$this->ViewPath = $viewPath; 
-		$this->ControllerName = $controller;
 		$this->HomeURL = $home;
 	}
 	
@@ -34,7 +34,7 @@ class View
 	}
 	
 	public function render($view, $param = array()){
-		$filepath = $this->ViewPath . $this->ControllerName."/$view.php";
+		$filepath = $this->ViewPath . "/$view.php";
 		return $this->getContentView($filepath, $param);
 	}	
 	
@@ -48,6 +48,7 @@ class View
 		foreach($param as $k => $v){
 			${$k} = $v;
 		}
+		
 		if (is_file($filename)) {
 			ob_start();
 			try{
@@ -57,11 +58,16 @@ class View
 			catch(\Exception $e){
 				ob_end_clean();
 				throw $e;
+			}catch(\Error $e){
+				ob_end_clean();
+				throw $e;
 			}
 			$contents = ob_get_clean();
 			return $contents;
 		}
-		else throw new Exceptions\FileNotFoundException($filename);
+		else {
+			throw new Exceptions\FileNotFoundException($filename);
+		}
 	}
 	
 	public static function startHead()
@@ -69,15 +75,17 @@ class View
 		echo "<head>";
     }
 	
-	public static function endHead($AssetClass)
+	public static function endHead()
     {
+		$AssetClass = '\\'.WebApp::$config['namespace'].'\\assets\\AppAsset';
 		$Asset = new $AssetClass();
 		echo $Asset::addStyle($Asset::$css);
 		echo "</head>";
     }
 	
-	public static function endBody($AssetClass)
+	public static function endBody()
     {
+		$AssetClass = '\\'.WebApp::$config['namespace'].'\\assets\\AppAsset';
 		$Asset = new $AssetClass();
 		echo $Asset::addJs($Asset::$js);
     }
