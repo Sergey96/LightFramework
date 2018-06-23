@@ -4,7 +4,9 @@ use engine\WebApp;
 use engine\widgets\Breadcrumbs;
 use backend\assets\AppAsset;
 
-$this->params['breadcrumbs'] = array();
+$this->title = $title;
+$this->params = $params;
+
 ?>
 
 <!DOCTYPE html>
@@ -16,47 +18,34 @@ $this->params['breadcrumbs'] = array();
 <body>
 	<div id="page">
 		<div id="sidebar">
-			<p><?= WebApp::$user->name ?><a href='/home/logout'>Выход</a></p>
+			<a class="sidebar_title" href="http://light.edu">LIGHT FRAMEWORK</a>
 			<ul class='sidebar-menu'>
-				
-			  <li class='sidebar-header'>MAIN NAVIGATION</li>
+			  <li class='sidebar-header'></li>
 			  <li>
-				<a href='#'><span>HOME</span></a>
+				<a href='#'><span>ГЛАВНАЯ</span></a>
 				<ul class='sidebar-submenu'>
-				  <li><a href='/home/'>HOME index</a></li>
+				  <li><a href='<?= WebApp::$controller->URL ?>'>HOME index</a></li>
 				</ul>
 			  </li>
 			  <li>
-				<a href='#'><span>FILMS</span></a>
-				<ul class='sidebar-submenu'>
-				  <li><a href='/films/'>FILMS index</a></li>
-				  <li><a href='/films/create'>FILMS create</a></li>
-				  <li><a href='/films/view?id=1'>FILMS view</a></li>
-				  <li><a href='/films/update?id=1'>FILMS update</a></li>
-				</ul>
-			  </li>
-			  <li>
-				<a href='#'><span>Генератор кода</span></a>
-				<ul class='sidebar-submenu'>
-				  <li><a href='/gii/'>GII index</a></li>
-				  <li><a href='/gii/crud'>GII CRUD</a></li>
-				  <li><a href='/gii/models'>GII Models</a></li>
-				</ul>
-			  </li>
-			  <li>
-				<a href='#'><span>Права Доступа</span></a>
-				<ul class='sidebar-submenu'>
-				  <li><a href='/users/'>Пользователи</a></li>
-				  <li><a href='/access/'>Роли доступа</a></li>
-				  <li><a href='/assign'>Связь Ролей и пользователей</a></li>
-				</ul>
-			  </li>
 			</ul>
 		</div>
 		<div id="wrapper">
 			<div id="wrapper-title">
 				<div id="breadcrumbs">
-					<?php Breadcrumbs::View($this->params['breadcrumbs']);?>
+					<div class='col-xs-9'>
+						<?php Breadcrumbs::View($this->params['breadcrumbs']);?>
+					</div>
+					<?php 
+						if(isset(WebApp::$user->name))
+							if(!WebApp::$user->name){ ?>
+							<div class='login-box col-xs-3'><a href='/home/login'>Войти</a></div>
+					<?php 
+						} else { ?>
+							<div class='logout-box col-xs-3'>
+								<a href='/home/logout'>Выход</a>:<span class='logout-user'><?= WebApp::$user->name ?><span>
+							</div>
+					<?php } ?>
 				</div>
 				<div id="content-title">
 					<div id="content-title-string">
