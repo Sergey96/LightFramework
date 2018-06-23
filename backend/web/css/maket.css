@@ -5,7 +5,7 @@ body, p {
 }
 
 body {
-	background: rgb(237,237,237);
+	background: #fff;
 }
 
 #page {
@@ -13,34 +13,75 @@ body {
 }
 
 #sidebar {
-	width:23%;
-	height:700px;
-	background:rgb(55,65,74);
+	height: 700px;
+	background: #222d32;
 	float: left;
+	position: fixed;
+	width: 18%;
+	min-width: 203px;
 }
 
 #wrapper {
-  float: right;
-  width: 77%;
-  background: rgb(237,237,237);
+	float: right;
+	width: 82%;
+	padding-bottom:25px;
 }
+
+#wrapper-title {
+  overflow: hidden;
+}
+
 #breadcrumbs {
-  width: 80%;
-  padding-left: 40px;
-  margin-bottom: 15px;
-  float: left;
+	width: 100%;
+	margin-bottom: 15px;
+	float: left;
+	padding: 5px 0px 3px 40px;
+	background: #222d32;
 }
 #breadcrumbs ul {
   padding: 0;
   margin: 0;
 }
 #breadcrumbs li {
-  display: inline;
-  font-size: 14px;
+	display: inline;
+	font-size: 14px;
+	color: #fff;
+}
+
+#breadcrumbs li :after{
+	padding-left: 5px;
+	content: "\f054";
+	font-family: FontAwesome;
+	font-style: normal;
+	font-weight: normal;
+	color: #8fbeff;;
+	font-size: 9px;
+	padding-right: 1em;
+	position: relative;
+	top: -1px;
+	left: 4px;
 }
 #breadcrumbs a {
-  color: rgb(31, 137, 159);
-  text-decoration: none;
+	color: #8fbeff;;
+	text-decoration: none;
+	font-weight: 700;
+	font-family: Verdana;
+}
+
+#breadcrumbs .login-box  a{
+	color:white;
+}
+
+#breadcrumbs .logout-box  a{
+	color:white;
+}
+
+#breadcrumbs .logout-box span {
+	color:white;
+}
+
+#content {
+    padding-right: 132px;
 }
 
 #content-title {
@@ -49,16 +90,12 @@ body {
   width: 80%;
   float: left;
   margin-top: 15px;
-  /*! margin-bottom: 40px; */
+  margin-bottom: 10px;
 }
 #reminder {
   width: 12%;
   height: 69px;
   float: right;
-}
-#wrapper-title {
-  overflow: hidden;
-  background: rgb(224,224,224);
 }
 
 #filters {
@@ -197,6 +234,7 @@ body {
 }
 
 #data table th {
+	font-weight: 500;
 	padding: 15px;
 	padding-left: 15px;
 }
@@ -216,4 +254,28 @@ body {
     width: 40px;
     padding-right: 0;
     cursor: pointer;
+}
+
+#footer {
+	overflow: hidden;
+	height: 45px;
+	background: #222d32;
+	width: 82%;
+	float: right;
+	padding-top: 13px;
+	position: fixed;
+	top: 615px;
+	left: 243px;
+}
+
+#footer p {
+    margin: 0 auto;
+    width: 50%;
+    color: #aac8ce;
+    font-size: 10pt;
+}
+
+.footer-link {
+	color: #69a7ff;
+	font-weight: 700;
 }
