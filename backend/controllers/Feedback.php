@@ -6,6 +6,7 @@ use engine\WebApp;
 use engine\Controller\Controller;
 use backend\models\FeedbackModel;
 use backend\models\SearchModels\FeedbackSearchModel;
+use engine\base\Exceptions as Exceptions;
 
 /**
  * Feedback - backend\controllers Контроллер
@@ -63,8 +64,12 @@ class Feedback extends Controller
 	public function actionUpdate($id){
 		$model = new FeedbackModel();
 		if($model->load(WebApp::$request->post())){
-			$model->save();
-			$this->redirect(['view', 'id'=>$id]);
+			if(isset(WebApp::$request->post()['_csrf']) && 
+				strcmp(WebApp::$request->post()['_csrf'], WebApp::$user->token) == 0){
+				$model->save();
+				$this->redirect(['view', 'id'=>$id]);
+			}
+			else throw new Exceptions\CSRFDetectedException('_csrf токены не совпадают');
 		}
 		else {
 			$model = $model->findOne($id);

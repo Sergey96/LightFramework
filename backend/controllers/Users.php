@@ -25,7 +25,7 @@ class Users extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error', 'changepass'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error', 'password'],
 					'roles' => ['admin'],
 				],
 				[
@@ -63,21 +63,25 @@ class Users extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new UsersModel();
-		if($model->load(WebApp::$request->post())){
-			$
+		$model->load(WebApp::$request->post());
+		if(!$model->getErrorsLoad()){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
+			$error = $model->getErrorsLoad();
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+			$this->render('update', [
+				'model'=>$model, 
+				'error'=>$error
+			]);
 		}
 	}
 	
 	/**
 	 * action - Обновить запись
 	 */
-	public function actionChangepass($id){
+	public function actionPassword($id){
 		$model = new UsersModel();
 		if(isset(WebApp::$request->post()['password'])){
 			$model = $model->findOne($id);
@@ -87,7 +91,7 @@ class Users extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('ChangePass', ['model'=>$model]);
+			$this->render('password', ['model'=>$model]);
 		}
 	}
 	

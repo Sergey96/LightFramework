@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use engine\Controller\Controller;
-use backend\models\FilmsModel;
+use backend\models\ArticleModel;
 use backend\models\LoginFormModel;
 use engine\WebApp;
 
@@ -23,19 +23,14 @@ class Home extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete', 'logout'],
-					'roles' => ['dev', 'admin'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'logout', 'error'],
+					'roles' => ['admin', '*'],
 				],
 				[
 					'allow' => true,
-					'actions' => ['login', 'error', 'logout'],
+					'actions' => ['login', 'error'],
 					'roles' => ['?'],
 				],
-				[
-					'allow' => false,
-					'actions' => ['index', 'create', 'update', 'view', 'delete', 'logout'],
-					'roles' => ['*'],
-				]
 			],
 			'redirect' => [
 				'controller'=>'home', 
@@ -92,7 +87,7 @@ class Home extends Controller
 	public function actionLogin(){
 		$model = new LoginFormModel();
 		if($model->load(WebApp::$request->post()) && $model->login()){
-			$this->redirect(['index'], 'home');
+			$this->redirect(['index']);
 		}
 		else {
 			$this->render('login', ['model'=>$model]);
