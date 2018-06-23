@@ -68,9 +68,10 @@ class ###CONTROLLER_NAME### extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+			$this->render('update', [
+				'model'=>$model,
+			]);
 		}
-	}
 	
 	/**
 	 * action - Создать запись
@@ -82,8 +83,28 @@ class ###CONTROLLER_NAME### extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('create', ['model'=>$model]);
+			$this->render('create', [
+				'model'=>$model,
+			]);
 		}
+	}
+		
+		
+		$model->load(WebApp::$request->post());
+		if(!$model->getErrorsLoad()){
+			$model->save();
+			$this->redirect(['view', 'id'=>$id]);
+		}
+		else {
+			$error = $model->getErrorsLoad();
+			$model = $model->findOne($id);
+			$this->render('update', [
+				'model'=>$model, 
+				'error'=>$error
+			]);
+		}
+		
+		
 	}
 	
 	/**
