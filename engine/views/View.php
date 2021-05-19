@@ -4,7 +4,7 @@ namespace engine\views;
 
 use engine\WebApp;
 use engine\base\Exceptions as Exceptions;
-
+//Класс представления
 class View
 {
 
