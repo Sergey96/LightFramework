@@ -18,10 +18,7 @@ namespace frontend\models;
 class FeedbackModel extends \engine\DB\ActiveRecord
 {
 	public $Table = 'feedback';
-    /**
-     * @inherited
-     *
-     */
+
 	public $id;
 	public $sender;
 	public $sender_email;
@@ -30,10 +27,6 @@ class FeedbackModel extends \engine\DB\ActiveRecord
 	public $created;
 	public $readed;
 	
-	/**
-     * @inherited
-     *
-     */
 	public static $attributeLabels =
 	[
 		'id' => ['ID', 'int', 'autoincrement'],
