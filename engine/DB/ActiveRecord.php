@@ -199,15 +199,6 @@ class ActiveRecord extends Model
 		else return true;
 	}
 
-	/*
-	['=' => ['id', '1']
-	['and' => ['id', '1']]
-	['or' => [
-		['=' => ['id', '1']],
-		['=' => ['id', '2']]
-	]]
-	['id', '1']]
-	*/
 	public function getByIDs($id){
 		return $this->getByField('id', $id);
 	}
