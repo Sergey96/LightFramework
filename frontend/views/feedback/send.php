@@ -7,5 +7,5 @@ $this->params['breadcrumbs'][] = ['label'=>'Главная', 'url'=>$this->HomeU
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
-    <h4>Письмо успешно отправлено</h4>	
+    <h4>Письмо успешно отправлено!</h4>	
 </div>
