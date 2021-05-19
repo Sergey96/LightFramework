@@ -60,18 +60,6 @@ $this->params = $params;
 				</div>
 			</div>
 			<div id="content">
-				<!-- FILTERS -->
-				<?php 
-				/*
-					$FILTER = new Filter();
-					print_r($FILTER->printFilters(array(	
-											"category"=>"Категория", 
-											"key"=>"Ключ", 
-											"value"=>"Значение"
-										)));
-										*/
-				?>
-				
 				<div id="data">
 					<!-- TABLE -->
 					<?php echo $content;?>
