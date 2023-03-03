@@ -97,8 +97,9 @@ class Controller
      * @throws Exceptions\ArgumentNotFoundException
      * @throws Exceptions\ForbiddenException
      */
-    public function selectAction()
+    public function execAction()
     {
+        $this->checkAccess();
         $action = $this->getActionMethod();
         $Metods = $this->getMethods();
 
@@ -111,19 +112,11 @@ class Controller
             $count = count($params);
 
             if ($count > 0) {
-                call_user_func_array(array($this, $action), $params);
+                return call_user_func_array(array($this, $action), $params);
             } else {
-                return $this->$action;
+                return $this->$action();
             }
         }
-    }
-
-    public function execAction()
-    {
-        $this->checkAccess();
-        $action = $this->selectAction();
-        print_r($action);
-        return $action();
     }
 
     private function checkAccess()
