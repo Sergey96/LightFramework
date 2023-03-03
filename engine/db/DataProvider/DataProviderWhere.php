@@ -3,7 +3,7 @@
 namespace engine\db\DataProvider;
 
 use engine\WebApp;
-use engine\base\Exceptions as Exceptions;
+use engine\core\exceptions as Exceptions;
 
 class DataProviderWhere
 {

@@ -51,7 +51,7 @@ class Access extends Controller
 	public function actionIndex(){
 		$searchModel = new AccessSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-		$this->render('index', [
+        return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -68,7 +68,7 @@ class Access extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+            return $this->render('update', ['model'=>$model]);
 		}
 	}
 	
@@ -82,7 +82,7 @@ class Access extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('create', ['model'=>$model]);
+            return $this->render('create', ['model'=>$model]);
 		}
 	}
 	
@@ -92,7 +92,7 @@ class Access extends Controller
 	public function actionView($id){
 		$model = new AccessRolesModel();
 		$model = $model->findOne($id);
-		$this->render('view', ['model'=>$model]);
+        return $this->render('view', ['model'=>$model]);
 	}
 	
 	/**

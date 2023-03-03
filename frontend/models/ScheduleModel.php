@@ -2,6 +2,8 @@
 
 namespace frontend\models;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * This is the model class for table "{{%schedule}}".
  *
@@ -18,7 +20,7 @@ namespace frontend\models;
 
  */
  
-class ScheduleModel extends \engine\DB\ActiveRecord
+class ScheduleModel extends ActiveRecord
 {
 	public $Table = 'schedule';
     /**

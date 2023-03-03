@@ -2,7 +2,8 @@
 
 namespace common\User;
 
-use engine\base\Exceptions as Exceptions;
+use engine\base\models\ActiveRecord;
+
 /**
  * Модель таблицы Users; Данные пользователя
  *
@@ -13,7 +14,7 @@ use engine\base\Exceptions as Exceptions;
  * @property text $avatar
 
  */
-class UsersModel extends \engine\DB\ActiveRecord
+class UsersModel extends ActiveRecord
 {
 	/**
      * @inherited

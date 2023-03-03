@@ -3,7 +3,6 @@
 namespace engine\db\DataProvider;
 
 use engine\WebApp;
-use engine\db\DataProvider\DataProviderFrom;
 
 class DataProvider
 {

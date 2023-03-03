@@ -2,7 +2,7 @@
 
 namespace engine\widgets\NEWS;
 
-use engine\base\Exceptions as Exceptions;
+use engine\core\exceptions as Exceptions;
 use engine\WebApp;
 
 class NEWS

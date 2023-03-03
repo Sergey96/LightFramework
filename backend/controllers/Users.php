@@ -71,7 +71,7 @@ class Users extends Controller
 		else {
 			$error = $model->getErrorsLoad();
 			$model = $model->findOne($id);
-			$this->render('update', [
+            return $this->render('update', [
 				'model'=>$model, 
 				'error'=>$error
 			]);
@@ -91,7 +91,7 @@ class Users extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('password', ['model'=>$model]);
+            return $this->render('password', ['model'=>$model]);
 		}
 	}
 	
@@ -105,7 +105,7 @@ class Users extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('create', ['model'=>$model]);
+            return $this->render('create', ['model'=>$model]);
 		}
 	}
 	
@@ -115,7 +115,7 @@ class Users extends Controller
 	public function actionView($id){
 		$model = new UsersModel();
 		$model = $model->findOne($id);
-		$this->render('view', ['model'=>$model]);
+        return $this->render('view', ['model'=>$model]);
 	}
 	
 	/**

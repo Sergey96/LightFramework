@@ -2,6 +2,8 @@
 
 namespace frontend\models;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * This is the model class for table "{{%feedback}}".
  *
@@ -15,7 +17,7 @@ namespace frontend\models;
 
  */
  
-class FeedbackModel extends \engine\DB\ActiveRecord
+class FeedbackModel extends ActiveRecord
 {
 	public $Table = 'feedback';
 

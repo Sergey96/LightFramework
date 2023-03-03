@@ -44,7 +44,7 @@ class Home extends Controller
 	 */
 	public function action(){
 		$model = new FilmsModel();
-		$this->render('index', ['model'=>$model]);
+        return $this->render('index', ['model'=>$model]);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ class Home extends Controller
 	 */
 	public function actionIndex(){
 		$model = new FilmsModel();
-		$this->render('index', ['model'=>$model]);
+        return $this->render('index', ['model'=>$model]);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ class Home extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+            return $this->render('update', ['model'=>$model]);
 		}
 	}
 	
@@ -78,7 +78,7 @@ class Home extends Controller
 		/// TODO: Сделать свойство Table статическим
 		$model = new FilmsModel();
 		$model = $model->findOne($id);
-		$this->render('view', ['model'=>$model]);
+        return $this->render('view', ['model'=>$model]);
 	}
 		
 	/**
@@ -90,7 +90,7 @@ class Home extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('login', ['model'=>$model]);
+            return $this->render('login', ['model'=>$model]);
 		}
 	}
 		
@@ -99,7 +99,7 @@ class Home extends Controller
 	 */
 	public function actionLogout(){
 		WebApp::$user->logout();
-		$this->redirect(['index'], 'home');
+        return $this->redirect(['index'], 'home');
 	}
 	
 }

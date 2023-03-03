@@ -2,14 +2,13 @@
 
 namespace engine;
 
-use engine\Components\URLManager;
-use engine\base\Exceptions as Exceptions;
-use app\controllers;
-use app\models;
-use engine\Request\Request;
-use engine\DB\DataBase;
-use engine\base\Log\Logger;
-use engine\base\User\User;
+use engine\core\components\URLManager;
+use engine\core\exceptions as Exceptions;
+use engine\core\request\Request;
+use engine\core\DB\DataBase;
+use engine\core\log\Logger;
+use engine\core\user\User;
+use engine\controller\Error as ErrorController;
 
 /**
  * WebApp - основной класс приложения
@@ -54,12 +53,16 @@ class WebApp
 	public function __construct($config){
 		session_start();
 		set_error_handler("\\engine\\WebApp::LightErrorHandler");
-		WebApp::$config = $config;
-		WebApp::$request = new Request($_GET, $_POST);
-		WebApp::$logger = new Logger();
-		WebApp::$home = $this->levelUpDir($this->levelUpDir($config['home']));
+
+        WebApp::$config = $config;
+
 		$this->run();
 	}
+
+	public function isAjaxMode()
+    {
+        return strpos($_SERVER['HTTP_ACCEPT'], "json") !== false;
+    }
 	
 	/**
 	 * Запуск приложения
@@ -68,34 +71,51 @@ class WebApp
 	 * В случае неудачи выводим красивую страницу ошибки
 	 */
 	private function run(){
-		try {	
-			$this->URL = new URLManager(WebApp::$config);
-			WebApp::$connection = new DataBase(self::$config['db']);
-			WebApp::$user = new User();		//exit();
-			switch($this->URL->Controller){
-				case "Gii": $control = "engine\\components\\Gii\\Gii"; break;
-				default : $control = self::$config['namespace']."\\controllers\\".$this->URL->Controller; break;
-			}
-		
-			if (!class_exists($control)){
-				$control = "engine\\controller\\Controller";
-				WebApp::$controller = new $control($this->URL);
-				throw new Exceptions\URLNotFoundException($this->URL->Controller);
-			}
-			WebApp::$controller = new $control($this->URL);
-			WebApp::$controller->selectAction();
+        $isAjax = self::isAjaxMode();
+
+		try {
+            self::$request = new Request($_GET, $_POST);
+            self::$logger = new Logger();
+
+            self::$home = $this->levelUpDir($this->levelUpDir(self::$config['home']));
+
+			$this->URL = new URLManager(self::$config);
+            self::$connection = new DataBase(self::$config['db']);
+            self::$user = new User();
+
+            $control = $this->getController();
+
+            self::$controller = new $control($this->URL, $isAjax);
+            echo self::$controller->execAction();
+
 		}
 		catch(\Exception $e){
-			$control = "engine\\controller\\Error";
-			WebApp::$controller = new $control($this->URL);
-			WebApp::$controller->actionError($e);
+			$this->responseError($e, $isAjax);
 		}
 		catch(\Error $e){
-			$control = "engine\\controller\\Error";
-			WebApp::$controller = new $control($this->URL);
-			WebApp::$controller->actionError($e);
+            $this->responseError($e, $isAjax);
 		}
 	}
+
+	private function responseError($e, $isAjax)
+    {
+        self::$controller = new ErrorController($this->URL, $isAjax);
+        echo self::$controller->actionError($e);
+    }
+
+	private function getController()
+    {
+        switch($this->URL->Controller){
+            case "Gii": $control = "engine\\components\\Gii\\Gii"; break;
+            default : $control = self::$config['namespace']."\\controllers\\".$this->URL->Controller; break;
+        }
+
+        if (!class_exists($control)){
+            throw new Exceptions\URLNotFoundException($this->URL->Controller);
+        }
+
+        return $control;
+    }
 	
 	/**
 	 * Собственный обработчик ошибок и исключений
@@ -111,27 +131,27 @@ class WebApp
 		}
 
 		switch ($errno) {
-		case E_USER_ERROR:
-			echo "<b>My ERROR</b> [$errno] $errstr<br />\n";
-			echo "  Фатальная ошибка в строке $errline файла $errfile";
-			echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
-			echo "Завершение работы...<br />\n";
-			exit(1);
-			break;
+            case E_USER_ERROR:
+                echo "<b>My ERROR</b> [$errno] $errstr<br />\n";
+                echo "  Фатальная ошибка в строке $errline файла $errfile";
+                echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br />\n";
+                echo "Завершение работы...<br />\n";
+                exit(1);
+                break;
 
-		case E_USER_WARNING:
-			echo "<b>My WARNING </b> [$errno] $errstr<br />\n";
-			die();
-			break;
+            case E_USER_WARNING:
+                echo "<b>My WARNING </b> [$errno] $errstr<br />\n";
+                die();
+                break;
 
-		case E_USER_NOTICE:
-			echo "<b>My NOTICE</b> [$errno] $errstr<br />\n";
-			die();
-			break;
+            case E_USER_NOTICE:
+                echo "<b>My NOTICE</b> [$errno] $errstr<br />\n";
+                die();
+                break;
 
-		default:
-			throw new Exceptions\Exception($errno, $errstr, $errfile, $errline);
-			break;
+            default:
+                throw new Exceptions\Exception($errno, $errstr, $errfile, $errline);
+                break;
 		}
 
 		/* Не запускаем внутренний обработчик ошибок PHP */

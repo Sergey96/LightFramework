@@ -2,8 +2,7 @@
 
 namespace frontend\controllers;
 
-use engine\Controller\Controller;
-use frontend\models\FilmsModel;
+use engine\base\controllers\Controller;
 use frontend\models\ArticleModel;
 use frontend\models\LoginFormModel;
 use frontend\models\SearchModels\ArticleSearchModel;
@@ -20,7 +19,7 @@ class Home extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'view', 'logout'],
+					'actions' => ['index', 'view', 'logout', 'test'],
 					'roles' => ['admin'],
 				],
 				[
@@ -40,27 +39,27 @@ class Home extends Controller
 			]
 		];
 	}
-	
-	public function __construct($u){
-		parent::__construct($u);
-	}
-	
+
 	public function action(){
 		$model = new ArticleModel();
-		$this->render('index', ['model'=>$model]);
+        return $this->render('index', ['model'=>$model]);
 	}
 	
-	public function actionIndex(){		
+	public function actionIndex(){
 		$searchModel = new ArticleSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-		$this->render('index', [
+        return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
 	}
+
+    public function actionTest(){
+        return $this->asJson(["1231231"]);
+    }
 	
 	public function actionAll(){
-		$this->render('all', ['model'=>'aaaa']);
+        return $this->render('all', ['model'=>'aaaa']);
 	}
 	
 	public function actionUpdate($id){
@@ -71,7 +70,7 @@ class Home extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+            return $this->render('update', ['model'=>$model]);
 		}
 	}
 	
@@ -80,7 +79,7 @@ class Home extends Controller
 		/// TODO: Сделать свойство Table статическим
 		$model = new FilmsModel();
 		$model = $model->findOne($id);
-		$this->render('view', ['model'=>$model]);
+        return $this->render('view', ['model'=>$model]);
 	}
 		
 	/**
@@ -93,7 +92,7 @@ class Home extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('login', ['model'=>$model]);
+            return $this->render('login', ['model'=>$model]);
 		}
 	}
 	

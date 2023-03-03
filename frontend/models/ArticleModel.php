@@ -2,6 +2,8 @@
 
 namespace frontend\models;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * This is the model class for table "{{%articles}}".
  *
@@ -11,10 +13,9 @@ namespace frontend\models;
  * @property text $description
  * @property text $content
  * @property text $owner
-
  */
  
-class ArticleModel extends \engine\DB\ActiveRecord
+class ArticleModel extends ActiveRecord
 {
 	public $Table = 'articles';
     /**

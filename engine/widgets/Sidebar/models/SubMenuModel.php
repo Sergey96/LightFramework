@@ -2,10 +2,12 @@
 
 namespace engine\widgets\Sidebar\models;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * Модель - SectionModel Разделы сайдбара
  */
-class SubMenuModel extends \engine\DB\ActiveRecord
+class SubMenuModel extends ActiveRecord
 {
 	public $Table = 'sidebar_submenu';
 

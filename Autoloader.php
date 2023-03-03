@@ -54,15 +54,18 @@ namespace app
 					if (strpos($dir, '.') === FALSE) {
 						$path2 = $path . '/' . $dir;
 						$filepath = $path2 . '/' . $file . '.php';
-						if (Autoloader::debug) 
-							Autoloader::StPutFile(('ищем файл <b>' . $file . '</b> in ' . $filepath));
+						if (Autoloader::debug) {
+                            Autoloader::StPutFile(('ищем файл <b>' . $file . '</b> in ' . $filepath));
+                        }
 						if (file_exists($filepath)) {
 							if (Autoloader::debug) Autoloader::StPutFile(('подключили ' . $filepath));
 								$flag = FALSE;
-								print_r($filepath."<br />");
+								print_r('ищем файл <b>' . $file . '</b> in ' . $filepath);
 							require_once($filepath);
 							break;
-						}
+						} else {
+//						    print_r("<p>Файл не найден: <b>" . $file . '</b> in ' . $filepath . "</p>");
+                        }
 						Autoloader::recursive_autoload($file, $path2, $flag);
 					}
 				}
@@ -75,20 +78,24 @@ namespace app
 		 */
 		private static function StPutFile($data)
 		{
-			$dir = '../runtime/log.html';
+		    $path = $_SERVER['DOCUMENT_ROOT'];
+			$dir = self::levelUpDir(self::levelUpDir($path))  . '/frontend/runtime/log.html';
 			$file = fopen($dir, 'a');
 			flock($file, LOCK_EX);
 			fwrite($file, ('¦' .$data .'=>' .date('d.m.Y H:i:s') .'<br/>¦<br/>' .PHP_EOL));
 			flock($file, LOCK_UN);
 			fclose ($file);
 		}
+
+        private static function levelUpDir($path){
+            $pos = strrpos($path, '/', -0);
+            return substr($path, 0, $pos);
+        }
     
 	}
-	
+
 	/**
      * Запуск автозагрузки классов
      */
 	\spl_autoload_register('app\Autoloader::autoload');
 }
-
-?>

@@ -3,7 +3,7 @@
 namespace frontend\controllers;
 
 use engine\WebApp;
-use engine\Controller\Controller;
+use engine\base\controllers\Controller;
 use frontend\models\FeedbackModel;
 
 /**
@@ -57,10 +57,10 @@ class Feedback extends Controller
 		if($model->load(WebApp::$request->post())){
 			$model->created = date("Y-m-d H:i:s");
 			$model->save();
-			$this->render('send');
+            return $this->render('send');
 		}
 		else {
-			$this->render('create', ['model'=>$model]);
+            return $this->render('create', ['model'=>$model]);
 		}
 	}
 	

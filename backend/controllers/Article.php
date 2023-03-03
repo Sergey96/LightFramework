@@ -72,7 +72,7 @@ class Article extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+            return $this->render('update', ['model'=>$model]);
 		}
 	}
 	
@@ -86,7 +86,7 @@ class Article extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('create', ['model'=>$model]);
+            return $this->render('create', ['model'=>$model]);
 		}
 	}
 	
@@ -96,7 +96,7 @@ class Article extends Controller
 	public function actionView($id){
 		$model = new ArticleModel();
 		$model = $model->findOne($id);
-		$this->render('view', ['model'=>$model]);
+        return $this->render('view', ['model'=>$model]);
 	}
 	
 	/**

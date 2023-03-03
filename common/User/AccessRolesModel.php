@@ -2,15 +2,16 @@
 
 namespace common\User;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * This is the model class for table "{{%access_roles}}".
  *
  * @property int $id
  * @property text $name
-
  */
  
-class AccessRolesModel extends \engine\DB\ActiveRecord
+class AccessRolesModel extends ActiveRecord
 {
 	public $Table = 'access_roles';
     /**

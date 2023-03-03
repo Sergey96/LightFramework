@@ -7,7 +7,8 @@ return [
 		'host'=>'localhost',
 		'login'=>'root',
 		'password'=>'',
-		'dbname'=>'light',
+		'dbname'=>'vk_parser',
+        'charset' => 'utf8',
 	],
 	'controller'=>[
 		'default'=>'Users'
@@ -17,3 +18,5 @@ return [
 ];
 
 ?>
+
+

@@ -2,12 +2,13 @@
 
 namespace engine\widgets\Sidebar\models;
 
+use engine\base\models\ActiveRecord;
 use engine\WebApp;
 
 /**
  * Модель - SidebarSearchModel Разделы сайдбара
  */
-class SidebarSearchModel extends \engine\DB\ActiveRecord
+class SidebarSearchModel extends ActiveRecord
 {
 	public function search(){
 		$result = WebApp::$connection->executeQuery("

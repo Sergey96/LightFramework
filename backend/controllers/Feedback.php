@@ -6,7 +6,7 @@ use engine\WebApp;
 use engine\Controller\Controller;
 use backend\models\FeedbackModel;
 use backend\models\SearchModels\FeedbackSearchModel;
-use engine\base\Exceptions as Exceptions;
+use engine\core\exceptions as Exceptions;
 
 /**
  * Feedback - backend\controllers Контроллер
@@ -52,7 +52,7 @@ class Feedback extends Controller
 	public function actionIndex(){
 		$searchModel = new FeedbackSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-		$this->render('index', [
+        return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -73,7 +73,7 @@ class Feedback extends Controller
 		}
 		else {
 			$model = $model->findOne($id);
-			$this->render('update', ['model'=>$model]);
+            return $this->render('update', ['model'=>$model]);
 		}
 	}
 	
@@ -87,7 +87,7 @@ class Feedback extends Controller
 			$this->redirect(['index']);
 		}
 		else {
-			$this->render('create', ['model'=>$model]);
+            return $this->render('create', ['model'=>$model]);
 		}
 	}
 	
@@ -97,7 +97,7 @@ class Feedback extends Controller
 	public function actionView($id){
 		$model = new FeedbackModel();
 		$model = $model->findOne($id);
-		$this->render('view', ['model'=>$model]);
+        return $this->render('view', ['model'=>$model]);
 	}
 	
 	/**

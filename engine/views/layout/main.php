@@ -2,17 +2,16 @@
 	
 use engine\WebApp;
 use engine\widgets\Breadcrumbs;
-use backend\assets\AppAsset;
 
-$this->title = $title;
-$this->params = $params;
+$this->title = $title ?? '';
+$this->params = $params ?? [];
 
 ?>
 
 <!DOCTYPE html>
 <html>
 <?php $this->startHead() ?>
-	<title><?= $this->title ?></title>
+	<title><?= $this->title ?? '' ?></title>
 	
 <?php $this->endHead() ?>
 <body>
@@ -62,7 +61,7 @@ $this->params = $params;
 			<div id="content">
 				<div id="data">
 					<!-- TABLE -->
-					<?php echo $content;?>
+					<?php echo $content ?? '';?>
 				</div>
 			</div>
 		</div>

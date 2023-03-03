@@ -2,10 +2,12 @@
 
 namespace engine\widgets\Sidebar\models;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * Модель - SectionModel Разделы сайдбара
  */
-class SectionModel extends \engine\DB\ActiveRecord
+class SectionModel extends ActiveRecord
 {
 	public $Table = 'sidebar_section';
 

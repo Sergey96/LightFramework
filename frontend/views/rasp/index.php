@@ -9,9 +9,11 @@ $this->params['breadcrumbs'][] = "Статьи";
 <div class="articles-view">
 	<?php
 	$list = $dataProvider->exe($searchModel);
-	foreach($list as $article){
-		print_r($article->content);
-		$this->title = $article->title;
-	}
+	print_r($list);
+//
+//	foreach($list as $article){
+//		print_r($article->content);
+//		$this->title = $article->title;
+//	}
 	?>	
 </div>

@@ -2,7 +2,7 @@
 
 namespace engine\widgets\GridView;
 
-use engine\base\Exceptions as Exceptions;
+use engine\core\exceptions as Exceptions;
 use engine\WebApp;
 
 class GridView

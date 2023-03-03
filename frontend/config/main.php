@@ -6,7 +6,7 @@ return [
 	'db'=>[
 		'host'=>'localhost',
 		'login'=>'root',
-		'password'=>'',
+		'password'=>'123456',
 		'dbname'=>'light',
 	],
 	'controller'=>[

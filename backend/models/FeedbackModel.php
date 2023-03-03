@@ -2,7 +2,9 @@
 
 namespace backend\models;
  
-class FeedbackModel extends \engine\DB\ActiveRecord
+use engine\base\models\ActiveRecord;
+
+class FeedbackModel extends ActiveRecord
 {
 	public $Table = 'feedback';
 	

@@ -3,7 +3,8 @@
 namespace engine\views;
 
 use engine\WebApp;
-use engine\base\Exceptions as Exceptions;
+use engine\core\exceptions as Exceptions;
+
 //Класс представления
 class View
 {
@@ -36,19 +37,19 @@ class View
 	public function render($view, $param = array()){
 		$filepath = $this->ViewPath . "/$view.php";
 		return $this->getContentView($filepath, $param);
-	}	
-	
-	
+	}
+
     /**
      * Возвращает содержимое view - файла
      *
      * @return string
+     * @throws Exceptions\FileNotFoundException
      */
 	protected function getContentView($filename, $param) {
 		foreach($param as $k => $v){
 			${$k} = $v;
 		}
-		
+
 		if (is_file($filename)) {
 			ob_start();
 			try{
@@ -57,11 +58,12 @@ class View
 			}
 			catch(\Exception $e){
 				ob_end_clean();
-				throw $e;
+				throw new \Exception($filename . ': '. $e->getMessage());
 			}catch(\Error $e){
 				ob_end_clean();
-				throw $e;
+                throw new \Exception($filename . ': '. $e->getMessage());
 			}
+
 			$contents = ob_get_clean();
 			return $contents;
 		}

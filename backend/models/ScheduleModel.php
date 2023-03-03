@@ -2,6 +2,8 @@
 
 namespace backend\models;
 
+use engine\base\models\ActiveRecord;
+
 /**
  * This is the model class for table "{{%schedule}}".
  *
@@ -15,10 +17,9 @@ namespace backend\models;
  * @property text $title_work
  * @property text $room
  * @property int $id_teacher
-
  */
  
-class ScheduleModel extends \engine\DB\ActiveRecord
+class ScheduleModel extends ActiveRecord
 {
 	public $Table = 'schedule';
     /**

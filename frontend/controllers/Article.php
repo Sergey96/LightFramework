@@ -3,7 +3,7 @@
 namespace frontend\controllers;
 
 use engine\WebApp;
-use engine\Controller\Controller;
+use engine\base\controllers\Controller;
 use frontend\models\ArticleModel;
 use frontend\models\SearchModels\ArticleSearchModel;
 
@@ -56,7 +56,7 @@ class Article extends Controller
 	public function actionView($id){
 		$searchModel = new ArticleSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-		$this->render('view', [
+		return $this->render('view', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
