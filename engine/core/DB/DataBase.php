@@ -3,79 +3,81 @@
 namespace engine\core\DB;
 
 use engine\base\models\Model;
+use Exception;
 
 /**
  * DataBase - Класс для работы с БД
  */
 class DataBase extends Model
 {
-	private $Connection;
-	private $Host;
-	private $Login;
-	private $Password;
-	private $DBName;
-	private $Status;
-	private $Config;
-	
+    private \PDO $connection;
+    private bool $status;
+    private array $config;
+
     /**
      * Конструктор класса, создает соединение с БД
+     * @param array $config
+     * @throws Exception
      */
-	public function __construct($config){
-		$this->Config = $config;
-		$this->Status = false;
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+        $this->status = false;
 
-		$this->Init();
-	}
-	
-	/**
-	* Инициализация
-	*/
-	
-	private function Init(){
-		if($this->Status==false){
-			try{
-				$opt = [
-					\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-					\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-					\PDO::ATTR_EMULATE_PREPARES   => false,
-					\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
-				];
+        $this->init();
+    }
 
-				$this->Connection = new \PDO
-				(
-					"mysql:host=".$this->Config['host'].";dbname=".$this->Config['dbname'],//.";'collation' => 'utf8'", 
-					$this->Config['login'], $this->Config['password'], $opt
-				);
+    /**
+     * Инициализация
+     */
+    private function init()
+    {
+        if ($this->status == false) {
+            try {
+                $opt = [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                    \PDO::ATTR_EMULATE_PREPARES => false,
+                    \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
+                ];
 
-				$this->Status = true;
-			}
-			catch(\PDOException $e){
-				throw new \Exception($e->getMessage());
-			}
-		}
-	}
-	
+                $dsn = "mysql:host=" . $this->config['host'] . ";dbname=" . $this->config['dbname'];
+
+                $this->connection = new \PDO($dsn, $this->config['login'], $this->config['password'], $opt);
+
+                $this->status = true;
+            } catch (\PDOException $e) {
+                throw new Exception($e->getMessage());
+            }
+        }
+    }
+
     /**
      * Выполнение произвольного SQL-запроса
+     * @param $query
+     * @return false|\PDOStatement
      */
-	public function executeQuery($query){
-		return $this->Connection->query($query);
-	}
-	
-	/**
+    public function executeQuery($query)
+    {
+        return $this->connection->query($query);
+    }
+
+    /**
      * Подготовка \PDO->SQL - запроса
+     * @param $query
+     * @return bool|\PDOStatement
      */
-	public function prepare($query){
-		return $this->Connection->prepare($query);
-	}
-	
+    public function prepare($query)
+    {
+        return $this->connection->prepare($query);
+    }
+
     /**
      * Просмотр ошибок при выполнении запросов к БД
      */
-	public function getErrors(){
-		return $this->Connection->errorInfo();
-	}
+    public function getErrors()
+    {
+        return $this->connection->errorInfo();
+    }
 
 }
-
-?>

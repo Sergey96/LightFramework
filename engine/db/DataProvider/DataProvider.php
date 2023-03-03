@@ -24,11 +24,14 @@ class DataProvider
 		$str ='';
 		foreach($array as $k =>$v)
 		{
-			if($k==0)
-				$str .= "`".$v."`";
-			else
-				$str .= ", `".$v."`";
+			if($k==0) {
+			    $str .= "`".$v."`";
+            }
+			else {
+			    $str .= ", `".$v."`";
+            }
 		}
+
 		return $str;
 	}
 
@@ -52,13 +55,11 @@ class DataProvider
 		if (!$result) {
 			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->query);
 		}
-		if($this->asArray)
-			return $result->fetchAll(\PDO::FETCH_ASSOC);
+		if($this->asArray) {
+            return $result->fetchAll(\PDO::FETCH_ASSOC);
+        }
 		if($this->all){
 			return $result->fetchAll(\PDO::FETCH_CLASS, $class);
 		}
 	}
-	
 }
-
-?>

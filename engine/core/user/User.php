@@ -17,6 +17,7 @@ class User extends ActiveRecord
     public $avatar;
 
     public $token;
+
     public static $attributeLabels =
         [
             'id' => ['ID', 'int', 'autoincrement'],
@@ -28,13 +29,18 @@ class User extends ActiveRecord
         ];
 
     private $session;
+    /**
+     * @var array
+     */
+    private $roles;
 
     public function __get($property)
     {
         if (property_exists(get_class($this), $property)) {
             return $property;
-        } else
+        } else {
             throw new Exceptions\PropertyNotFoundException($property);
+        }
     }
 
     public function __construct()
@@ -44,8 +50,9 @@ class User extends ActiveRecord
         $login = $this->getSessionValue('user');
         if ($login) {
             $models = $model->findName($login);
-            if (isset($models[0]))
+            if (isset($models[0])) {
                 $model = $models[0];
+            }
             if ($this->compareString($model->token, $this->session['token'])) {
                 $this->load($model->getDataAsArray(false));
             }
@@ -54,9 +61,11 @@ class User extends ActiveRecord
 
     private function getSessionValue($name)
     {
-        if (isset($this->session[$name]))
+        if (isset($this->session[$name])) {
             return $this->session[$name];
-        else return false;
+        } else {
+            return false;
+        }
     }
 
     public function can()
@@ -71,16 +80,16 @@ class User extends ActiveRecord
 
         $access = false;
         $this->roles = $roles;
+
         if ($right) {
             foreach ($right['access'] as $rule) {
                 if ($rule['allow'] == true) {
                     $result = array_intersect($rule['roles'], $roles);
                     if (count($result) > 0) {
                         $method = array_search(WebApp::$controller->Action, $rule['actions']);
-                        //var_dump($method);
-                        if ($method === false)
+                        if ($method === false) {
                             $access = false;
-                        else {
+                        } else {
                             $access = true;
                             break;
                         }
@@ -88,15 +97,15 @@ class User extends ActiveRecord
                 }
             }
             return $access;
-        } else return true;
+        } else {
+            return true;
+        }
     }
 
     public function isRule($rule)
     {
         $method = array_search($rule, $this->roles);
-        if ($method === false)
-            return false;
-        else return true;
+        return $method !== false;
     }
 
     public function login($user)

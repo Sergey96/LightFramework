@@ -10,7 +10,9 @@ class UsersSearchModel extends \common\User\UsersModel
 {
 	public function search(){	
 		$dataProvider = new DataProvider();
-		return $dataProvider->select($this->getFields())->from($this->Table)->all();
+		return $dataProvider->select($this->getFields())
+            ->from($this->Table)
+            ->all();
 	}
 	
 	public function findOne($id){
@@ -19,7 +21,11 @@ class UsersSearchModel extends \common\User\UsersModel
 	
 	public function findName($name){
 		$dataProvider = new DataProvider();
-		return $dataProvider->select($this->getFields())->from($this->Table)->where("name = '$name'")->One()->exe($this);
+		return $dataProvider->select($this->getFields())
+            ->from($this->Table)
+            ->where("name = '$name'")
+            ->One()
+            ->exe($this);
 	}
 }
 

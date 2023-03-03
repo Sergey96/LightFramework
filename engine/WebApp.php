@@ -9,6 +9,7 @@ use engine\core\DB\DataBase;
 use engine\core\log\Logger;
 use engine\core\user\User;
 use engine\controller\Error as ErrorController;
+use engine\base\controllers\Controller;
 
 /**
  * WebApp - основной класс приложения
@@ -18,25 +19,28 @@ class WebApp
 {
 
 	/// Массив конфигурации app/config/main.php
-	public static $config;
+	public static array $config;
 	/// Объект request - содержит данные get и post запросов
-	public static $request;
+	public static Request $request;
 	/// Объект connection - соединение с БД
-	public static $connection;
+	public static DataBase $connection;
 	/// Объект Error - ошибки приложения
-	public static $error;
+	public static ErrorController $error;
 	/// Объект logger - система логирования
-	public static $logger;
+	public static Logger $logger;
 	/// Объект текущего контроллера приложения (default из main.php)
-	public static $controller;
+	public static Controller $controller;
 	/// Базовый каталог приложения
-	public static $home;
+	public static string $home;
 	/// Объект user - текущий пользователь
-	public static $user;
+	public static User $user;
 	/// Строка time - Время для замера производительности
 	public static $time;
 	/// Объект URL - компонент URLManager
-	public $URL;
+    /**
+     * @var URLManager
+     */
+    public static URLManager $URL;
 	
 	/**
 	 * инициализация приложения
@@ -168,5 +172,3 @@ class WebApp
 	}
 	
 }
-
-?>

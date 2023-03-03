@@ -3,6 +3,7 @@
 namespace engine\Controller;
 
 use engine\base\controllers\Controller;
+use engine\core\components\URLManager;
 
 /**
  * ErrorController
@@ -11,11 +12,10 @@ use engine\base\controllers\Controller;
 
 class Error extends Controller
 {
-
-    public function __construct($URL, $isAjax = false)
+    public function __construct(URLManager $URL, $isAjax = false)
     {
         $this->ViewPath = '/engine/views/';
-        $this->URL = "http://" . $URL->getURL();
+        $this->URL = $URL->getProtocol() . "://" . $URL->getURL();
         $this->Layout = 'main';
         $this->Name = strtolower('Errors');
         $this->isAjax = $isAjax;
@@ -29,7 +29,7 @@ class Error extends Controller
                 'message' => $exception->getMessage(),
                 'code' => $exception->getCode(),
             ];
-            print_r($result);
+
             return $this->asJson(['error' => $result]);
         }
 

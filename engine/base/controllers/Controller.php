@@ -2,6 +2,7 @@
 
 namespace engine\base\controllers;
 
+use engine\core\components\URLManager;
 use engine\WebApp;
 use engine\core\exceptions as Exceptions;
 use engine\views\View;
@@ -38,12 +39,13 @@ class Controller
     /**
      * Конструктор класса
      *
-     * @return string
+     * @param $URL
+     * @param $isAjax
      */
-    public function __construct($URL, $isAjax)
+    public function __construct(URLManager $URL, $isAjax)
     {
         $this->Action = mb_strtolower($URL->Action, 'UTF-8');
-        $this->URL = "http://" . $URL->getURL();
+        $this->URL = $URL->getProtocol() . "://" . $URL->getURL();
         $this->Layout = 'main';
         $this->Name = strtolower($URL->Controller);
         $this->ViewPath = '/'. WebApp::$config['namespace'] . '/views/';
@@ -101,14 +103,14 @@ class Controller
     {
         $this->checkAccess();
         $action = $this->getActionMethod();
-        $Metods = $this->getMethods();
+        $methods = $this->getMethods();
 
-        $key = array_search($action, $Metods);
-        if ($key === false) {
+        $isExist = array_search($action, $methods);
+        if ($isExist === false) {
             throw new Exceptions\ActionNotFoundException($this->Action);
         } else {
 
-            $params = $this->getArgsForMetod($action);
+            $params = $this->getArgsForMethod($action);
             $count = count($params);
 
             if ($count > 0) {
@@ -133,12 +135,14 @@ class Controller
     /**
      * Функция рендеринга представления
      *
+     * @param $view
+     * @param array $param
      * @return string
      */
-    protected function render($view, $param = array())
+    protected function render(string $view, $param = [])
     {
-        $viewObj = new View(WebApp::$home . $this->ViewPath . $this->Name, $this->URL);
-        $layoutObj = new View(WebApp::$home . $this->ViewPath . 'layout', $this->URL);
+        $viewObj = new View($this->getViewFile(), $this->URL);
+        $layoutObj = new View($this->getLayoutFile(), $this->URL);
 
         $content = $viewObj->render($view, $param);
 
@@ -168,40 +172,40 @@ class Controller
 
     private function arrayToURL($param, $controller)
     {
-        $url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $controller . '/' . $param[0];
-        $count = 0;
-        print_r($param);
-        if (count($param) > 1)
-            $url .= '?';
-        foreach ($param as $k => $p) {
-            $count++;
-            if ($count == 1) continue;
-            $url .= $k . '=' . $p . '&';
-        }
-        if (count($param) > 1)
-            $url = substr($url, 0, strlen($url) - 1);
-        return str_replace("\\", "/", $url);
+        return WebApp::$URL->arrayToURL($param, $controller);
     }
 
     private function getActionMethod()
     {
         $action = 'action' . mb_strtoupper(mb_substr($this->Action, 0, 1), 'UTF-8');
         $action .= mb_substr($this->Action, 1, strlen($this->Action) - 1, 'UTF-8');
+        // example: actionName
         return $action;
     }
 
+    private function getViewFile()
+    {
+        return WebApp::$home . $this->ViewPath . $this->Name;
+    }
 
-    private function getArgsForMetod($action)
+    private function getLayoutFile()
+    {
+        return WebApp::$home . $this->ViewPath . 'layout';
+    }
+
+    private function getArgsForMethod($action)
     {
         $class = new \ReflectionClass($this);
         $param = $class->getMethod($action)->getParameters();
+
         $count = count($param);
         $GET = WebApp::$request->get();
         $notFound = null;
+
         for ($i = 0; $i < $count; $i++) {
-            $notFound = $param[$i]->name;
+            $notFound = $field = $param[$i]->name;
             foreach ($GET as $name => $value) {
-                if ($param[$i]->name == $name) {
+                if ($field === $name) {
                     $notFound = null;
                     $args[] = $value;
                 }
@@ -225,5 +229,3 @@ class Controller
     }
 
 }
-
-?>

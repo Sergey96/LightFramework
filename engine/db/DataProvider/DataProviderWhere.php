@@ -10,15 +10,26 @@ class DataProviderWhere
 	private $query;
 	private $all;
 	private $asArray;
+	private $where;
 
 	public function __construct($query){
 		$this->query = $query;
 	}
-	
-	public function where($where){
-		$this->query .= " WHERE $where ";
-		return $this;
-	}
+
+    public function where($where){
+        $this->query .= " WHERE $where ";
+        return $this;
+    }
+
+    public function and($and){
+        $this->query .= " AND $and ";
+        return $this;
+    }
+
+    public function or($or){
+        $this->query .= " OR $or ";
+        return $this;
+    }
 	
 	public function all(){
 		$this->all = 1;
