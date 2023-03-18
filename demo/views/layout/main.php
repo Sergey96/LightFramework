@@ -2,7 +2,7 @@
 	
 use engine\widgets\Breadcrumbs;
 use engine\widgets\Sidebar\Sidebar;
-use frontend\assets\AppAsset;
+use demo\assets\AppAsset;
 use engine\WebApp;
 
 $this->title = $title;

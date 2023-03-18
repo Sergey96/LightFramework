@@ -1,10 +1,10 @@
 <?php
 
-namespace frontend\controllers;
+namespace demo\controllers;
 
 use engine\WebApp;
 use engine\base\controllers\Controller;
-use frontend\models\FeedbackModel;
+use demo\models\FeedbackModel;
 
 /**
  * Articles - backend\controllers Контроллер

@@ -40,7 +40,7 @@ class WebApp
     /**
      * @var URLManager
      */
-    public static URLManager $URL;
+    public URLManager $URL;
 	
 	/**
 	 * инициализация приложения
@@ -86,12 +86,10 @@ class WebApp
 			$this->URL = new URLManager(self::$config);
             self::$connection = new DataBase(self::$config['db']);
             self::$user = new User();
-
             $control = $this->getController();
 
             self::$controller = new $control($this->URL, $isAjax);
             echo self::$controller->execAction();
-
 		}
 		catch(\Exception $e){
 			$this->responseError($e, $isAjax);

@@ -1,11 +1,11 @@
 <?php
 
-namespace frontend\assets;
+namespace demo\assets;
 
 use engine\core\asset\Asset;
 
 /**
- * Main frontend application asset bundle.
+ * Main demo application asset bundle.
  */
 /// Подключение css, js к сайту
 class AppAsset extends Asset

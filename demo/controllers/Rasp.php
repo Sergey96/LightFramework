@@ -1,16 +1,16 @@
 <?php
 
-namespace frontend\controllers;
+namespace demo\controllers;
 
 use engine\WebApp;
 use engine\base\controllers\Controller;
-use frontend\models\ScheduleModel;
-use frontend\models\SearchModels\ScheduleSearchModel;
+use demo\models\ScheduleModel;
+use demo\models\SearchModels\ScheduleSearchModel;
 
 /**
- * Rasp - frontend\controllers Контроллер
+ * Rasp - demo\controllers Контроллер
  */
-/// Rasp - frontend\controllers Контроллер
+/// Rasp - demo\controllers Контроллер
 class Rasp extends Controller
 {
 

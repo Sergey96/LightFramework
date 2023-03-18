@@ -1,12 +1,12 @@
 <?php
 
-namespace frontend\models\SearchModels;
+namespace demo\models\SearchModels;
 
 use engine\db\DataProvider\DataProvider;
 
 /// ArticleModel - SearchModel
 
-class ArticleSearchModel extends \frontend\models\ArticleModel
+class ArticleSearchModel extends \demo\models\ArticleModel
 {
 	public function search($param){	
 		$dataProvider = new DataProvider();

@@ -1,12 +1,12 @@
 <?php
 
-namespace frontend\models\SearchModels;
+namespace demo\models\SearchModels;
 
 use engine\db\DataProvider\DataProvider;
 
 /// ScheduleModel - SearchModel
 
-class ScheduleSearchModel extends \frontend\models\ScheduleModel
+class ScheduleSearchModel extends \demo\models\ScheduleModel
 {
 	public function search($get){	
 		if(isset($get['id'])) $id = $get['id'];

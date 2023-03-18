@@ -13,7 +13,7 @@ return [
 		'default'=>'Home'
 	],
 	'home'=>str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']),
-	'namespace'=>'frontend',
+	'namespace'=>'demo',
 ];
 
 ?>

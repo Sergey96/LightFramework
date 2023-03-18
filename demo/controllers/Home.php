@@ -1,11 +1,11 @@
 <?php
 
-namespace frontend\controllers;
+namespace demo\controllers;
 
 use engine\base\controllers\Controller;
-use frontend\models\ArticleModel;
-use frontend\models\LoginFormModel;
-use frontend\models\SearchModels\ArticleSearchModel;
+use demo\models\ArticleModel;
+use demo\models\LoginFormModel;
+use demo\models\SearchModels\ArticleSearchModel;
 use engine\WebApp;
 
 class Home extends Controller

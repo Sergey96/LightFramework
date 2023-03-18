@@ -79,8 +79,9 @@ namespace app
 		private static function StPutFile($data)
 		{
 		    $path = $_SERVER['DOCUMENT_ROOT'];
-			$dir = self::levelUpDir(self::levelUpDir($path))  . '/frontend/runtime/log.html';
+			$dir = self::levelUpDir($path)  . '/runtime/log.html';
 			$file = fopen($dir, 'a');
+
 			flock($file, LOCK_EX);
 			fwrite($file, ('¦' .$data .'=>' .date('d.m.Y H:i:s') .'<br/>¦<br/>' .PHP_EOL));
 			flock($file, LOCK_UN);

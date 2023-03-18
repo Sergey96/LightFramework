@@ -1,11 +1,11 @@
 <?php
 
-namespace frontend\controllers;
+namespace demo\controllers;
 
 use engine\WebApp;
 use engine\base\controllers\Controller;
-use frontend\models\ArticleModel;
-use frontend\models\SearchModels\ArticleSearchModel;
+use demo\models\ArticleModel;
+use demo\models\SearchModels\ArticleSearchModel;
 
 /**
  * Articles - backend\controllers Контроллер
