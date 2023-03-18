@@ -1,12 +1,12 @@
 <?php
 
-namespace backend\models\SearchModels;
+namespace admin\models\SearchModels;
 
 use engine\db\DataProvider\DataProvider;
 
-/// AssignRolesModel - SearchModel
+/// FeedbackModel - SearchModel
 
-class AssignSearchModel extends \backend\models\AssignRolesModel
+class FeedbackSearchModel extends \admin\models\FeedbackModel
 {
 	public function search(){	
 		$dataProvider = new DataProvider();

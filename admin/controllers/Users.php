@@ -1,17 +1,18 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\ScheduleModel;
-use backend\models\SearchModels\ScheduleSearchModel;
+use admin\models\UsersModel;
+use admin\models\SearchModels\UsersSearchModel;
+use engine\Components\AccessManager;
 
 /**
- * Schedule - backend\controllers Контроллер
+ * Users - admin\controllers Контроллер
  */
-/// Schedule - backend\controllers Контроллер
-class Schedule extends Controller
+/// Users - admin\controllers Контроллер
+class Users extends Controller
 {
 
 	/**
@@ -24,7 +25,7 @@ class Schedule extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error', 'password'],
 					'roles' => ['admin'],
 				],
 				[
@@ -49,9 +50,9 @@ class Schedule extends Controller
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$searchModel = new ScheduleSearchModel();
+		$searchModel = new UsersSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-        return $this->render('index', [
+		$this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -61,14 +62,36 @@ class Schedule extends Controller
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new ScheduleModel();
-		if($model->load(WebApp::$request->post())){
+		$model = new UsersModel();
+		$model->load(WebApp::$request->post());
+		if(!$model->getErrorsLoad()){
+			$model->save();
+			$this->redirect(['view', 'id'=>$id]);
+		}
+		else {
+			$error = $model->getErrorsLoad();
+			$model = $model->findOne($id);
+            return $this->render('update', [
+				'model'=>$model, 
+				'error'=>$error
+			]);
+		}
+	}
+	
+	/**
+	 * action - Обновить запись
+	 */
+	public function actionPassword($id){
+		$model = new UsersModel();
+		if(isset(WebApp::$request->post()['password'])){
+			$model = $model->findOne($id);
+			$model->password = AccessManager::encryptPassword(WebApp::$request->post()['password']);
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
 			$model = $model->findOne($id);
-            return $this->render('update', ['model'=>$model]);
+            return $this->render('password', ['model'=>$model]);
 		}
 	}
 	
@@ -76,7 +99,7 @@ class Schedule extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new ScheduleModel();
+		$model = new UsersModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
@@ -90,7 +113,7 @@ class Schedule extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new ScheduleModel();
+		$model = new UsersModel();
 		$model = $model->findOne($id);
         return $this->render('view', ['model'=>$model]);
 	}
@@ -99,7 +122,7 @@ class Schedule extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new ScheduleModel();
+		$model = new UsersModel();
 		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}

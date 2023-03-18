@@ -1,18 +1,17 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\FeedbackModel;
-use backend\models\SearchModels\FeedbackSearchModel;
-use engine\core\exceptions as Exceptions;
+use admin\models\AssignRolesModel;
+use admin\models\SearchModels\AssignSearchModel;
 
 /**
- * Feedback - backend\controllers Контроллер
+ * Assign - admin\controllers Контроллер
  */
-/// Feedback - backend\controllers Контроллер
-class Feedback extends Controller
+/// Assign - admin\controllers Контроллер
+class Assign extends Controller
 {
 
 	/**
@@ -50,9 +49,9 @@ class Feedback extends Controller
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$searchModel = new FeedbackSearchModel();
+		$searchModel = new AssignSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-        return $this->render('index', [
+		$this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -62,14 +61,10 @@ class Feedback extends Controller
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new FeedbackModel();
+		$model = new AssignRolesModel();
 		if($model->load(WebApp::$request->post())){
-			if(isset(WebApp::$request->post()['_csrf']) && 
-				strcmp(WebApp::$request->post()['_csrf'], WebApp::$user->token) == 0){
-				$model->save();
-				$this->redirect(['view', 'id'=>$id]);
-			}
-			else throw new Exceptions\CSRFDetectedException('_csrf токены не совпадают');
+			$model->save();
+			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
 			$model = $model->findOne($id);
@@ -81,7 +76,7 @@ class Feedback extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new FeedbackModel();
+		$model = new AssignRolesModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
@@ -95,7 +90,7 @@ class Feedback extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new FeedbackModel();
+		$model = new AssignRolesModel();
 		$model = $model->findOne($id);
         return $this->render('view', ['model'=>$model]);
 	}
@@ -104,7 +99,7 @@ class Feedback extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new FeedbackModel();
+		$model = new AssignRolesModel();
 		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}

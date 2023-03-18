@@ -1,10 +1,10 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\Controller\Controller;
-use backend\models\ArticleModel;
-use backend\models\LoginFormModel;
+use admin\models\ArticleModel;
+use admin\models\LoginFormModel;
 use engine\WebApp;
 
 /**

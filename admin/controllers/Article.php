@@ -1,18 +1,17 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\UsersModel;
-use backend\models\SearchModels\UsersSearchModel;
-use engine\Components\AccessManager;
+use admin\models\ArticleModel;
+use admin\models\SearchModels\ArticleSearchModel;
 
 /**
- * Users - backend\controllers Контроллер
+ * Article - admin\controllers Контроллер
  */
-/// Users - backend\controllers Контроллер
-class Users extends Controller
+/// Article - admin\controllers Контроллер
+class Article extends Controller
 {
 
 	/**
@@ -25,7 +24,7 @@ class Users extends Controller
 			'access'=>[
 				[
 					'allow' => true,
-					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error', 'password'],
+					'actions' => ['index', 'create', 'update', 'view', 'delete', 'error'],
 					'roles' => ['admin'],
 				],
 				[
@@ -50,7 +49,7 @@ class Users extends Controller
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$searchModel = new UsersSearchModel();
+		$searchModel = new ArticleSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
 		$this->render('index', [
 			'dataProvider'=>$dataProvider,
@@ -62,36 +61,18 @@ class Users extends Controller
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new UsersModel();
+		$model = new ArticleModel();
 		$model->load(WebApp::$request->post());
+		//print_r($model->getErrorsLoad());
+		//exit();
 		if(!$model->getErrorsLoad()){
-			$model->save();
-			$this->redirect(['view', 'id'=>$id]);
-		}
-		else {
-			$error = $model->getErrorsLoad();
-			$model = $model->findOne($id);
-            return $this->render('update', [
-				'model'=>$model, 
-				'error'=>$error
-			]);
-		}
-	}
-	
-	/**
-	 * action - Обновить запись
-	 */
-	public function actionPassword($id){
-		$model = new UsersModel();
-		if(isset(WebApp::$request->post()['password'])){
-			$model = $model->findOne($id);
-			$model->password = AccessManager::encryptPassword(WebApp::$request->post()['password']);
+			$model->setNotNew();
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
 		else {
 			$model = $model->findOne($id);
-            return $this->render('password', ['model'=>$model]);
+            return $this->render('update', ['model'=>$model]);
 		}
 	}
 	
@@ -99,7 +80,7 @@ class Users extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new UsersModel();
+		$model = new ArticleModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
@@ -113,7 +94,7 @@ class Users extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new UsersModel();
+		$model = new ArticleModel();
 		$model = $model->findOne($id);
         return $this->render('view', ['model'=>$model]);
 	}
@@ -122,7 +103,7 @@ class Users extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new UsersModel();
+		$model = new ArticleModel();
 		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}

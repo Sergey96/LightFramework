@@ -14,7 +14,7 @@ return [
 		'default'=>'Users'
 	],
 	'home'=>str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']),
-	'namespace'=>'backend',
+	'namespace'=>'admin',
 ];
 
 ?>

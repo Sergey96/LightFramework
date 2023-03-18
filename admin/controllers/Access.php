@@ -1,16 +1,16 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\AccessRolesModel;
-use backend\models\SearchModels\AccessSearchModel;
+use admin\models\AccessRolesModel;
+use admin\models\SearchModels\AccessSearchModel;
 
 /**
- * Access - backend\controllers Контроллер
+ * Access - admin\controllers Контроллер
  */
-/// Access - backend\controllers Контроллер
+/// Access - admin\controllers Контроллер
 class Access extends Controller
 {
 

@@ -1,17 +1,17 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\ArticleModel;
-use backend\models\SearchModels\ArticleSearchModel;
+use admin\models\ScheduleModel;
+use admin\models\SearchModels\ScheduleSearchModel;
 
 /**
- * Article - backend\controllers Контроллер
+ * Schedule - admin\controllers Контроллер
  */
-/// Article - backend\controllers Контроллер
-class Article extends Controller
+/// Schedule - admin\controllers Контроллер
+class Schedule extends Controller
 {
 
 	/**
@@ -49,9 +49,9 @@ class Article extends Controller
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$searchModel = new ArticleSearchModel();
+		$searchModel = new ScheduleSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-		$this->render('index', [
+        return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -61,12 +61,8 @@ class Article extends Controller
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new ArticleModel();
-		$model->load(WebApp::$request->post());
-		//print_r($model->getErrorsLoad());
-		//exit();
-		if(!$model->getErrorsLoad()){
-			$model->setNotNew();
+		$model = new ScheduleModel();
+		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -80,7 +76,7 @@ class Article extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new ArticleModel();
+		$model = new ScheduleModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
@@ -94,7 +90,7 @@ class Article extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new ArticleModel();
+		$model = new ScheduleModel();
 		$model = $model->findOne($id);
         return $this->render('view', ['model'=>$model]);
 	}
@@ -103,7 +99,7 @@ class Article extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new ArticleModel();
+		$model = new ScheduleModel();
 		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}

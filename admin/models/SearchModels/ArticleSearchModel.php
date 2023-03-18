@@ -1,12 +1,12 @@
 <?php
 
-namespace backend\models\SearchModels;
+namespace admin\models\SearchModels;
 
 use engine\db\DataProvider\DataProvider;
 
-/// ScheduleModel - SearchModel
+/// ArticleModel - SearchModel
 
-class ScheduleSearchModel extends \backend\models\ScheduleModel
+class ArticleSearchModel extends \admin\models\ArticleModel
 {
 	public function search(){	
 		$dataProvider = new DataProvider();

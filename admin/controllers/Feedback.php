@@ -1,17 +1,18 @@
 <?php
 
-namespace backend\controllers;
+namespace admin\controllers;
 
 use engine\WebApp;
 use engine\Controller\Controller;
-use backend\models\AssignRolesModel;
-use backend\models\SearchModels\AssignSearchModel;
+use admin\models\FeedbackModel;
+use admin\models\SearchModels\FeedbackSearchModel;
+use engine\core\exceptions as Exceptions;
 
 /**
- * Assign - backend\controllers Контроллер
+ * Feedback - admin\controllers Контроллер
  */
-/// Assign - backend\controllers Контроллер
-class Assign extends Controller
+/// Feedback - admin\controllers Контроллер
+class Feedback extends Controller
 {
 
 	/**
@@ -49,9 +50,9 @@ class Assign extends Controller
 	 * action - Главная страница
 	 */
 	public function actionIndex(){
-		$searchModel = new AssignSearchModel();
+		$searchModel = new FeedbackSearchModel();
 		$dataProvider = $searchModel->search(WebApp::$request->get());
-		$this->render('index', [
+        return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -61,10 +62,14 @@ class Assign extends Controller
 	 * action - Обновить запись
 	 */
 	public function actionUpdate($id){
-		$model = new AssignRolesModel();
+		$model = new FeedbackModel();
 		if($model->load(WebApp::$request->post())){
-			$model->save();
-			$this->redirect(['view', 'id'=>$id]);
+			if(isset(WebApp::$request->post()['_csrf']) && 
+				strcmp(WebApp::$request->post()['_csrf'], WebApp::$user->token) == 0){
+				$model->save();
+				$this->redirect(['view', 'id'=>$id]);
+			}
+			else throw new Exceptions\CSRFDetectedException('_csrf токены не совпадают');
 		}
 		else {
 			$model = $model->findOne($id);
@@ -76,7 +81,7 @@ class Assign extends Controller
 	 * action - Создать запись
 	 */
 	public function actionCreate(){
-		$model = new AssignRolesModel();
+		$model = new FeedbackModel();
 		if($model->load(WebApp::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
@@ -90,7 +95,7 @@ class Assign extends Controller
 	 * action - Просмотреть запись
 	 */
 	public function actionView($id){
-		$model = new AssignRolesModel();
+		$model = new FeedbackModel();
 		$model = $model->findOne($id);
         return $this->render('view', ['model'=>$model]);
 	}
@@ -99,7 +104,7 @@ class Assign extends Controller
 	 * action - Удалить запись
 	 */
 	public function actionDelete($id){
-		$model = new AssignRolesModel();
+		$model = new FeedbackModel();
 		$model = $model->findOne($id)->delete();
 		$this->redirect(['index']);
 	}

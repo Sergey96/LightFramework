@@ -2,7 +2,7 @@
 	
 use engine\WebApp;
 use engine\widgets\Breadcrumbs;
-use backend\assets\AppAsset;
+use admin\assets\AppAsset;
 
 $this->title = $title;
 $this->params = $params;

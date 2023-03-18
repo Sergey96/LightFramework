@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace admin\models;
 
 /**
  * This is the model class for table "{{%access_roles}}".
