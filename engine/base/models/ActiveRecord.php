@@ -87,7 +87,7 @@ class ActiveRecord extends Model
     protected function insertSQL(){
         $fields = $this->getFieldsAsString();
         $data = $this->getFieldsForValueAsString();
-        $query = "INSERT INTO `". $this->Table ."` ($fields) VALUES ($data)";
+        $query = "INSERT INTO ". $this->Table ." ($fields) VALUES ($data)";
         return $query;
     }
 	
@@ -99,12 +99,12 @@ class ActiveRecord extends Model
      */
     protected function updateSQL(){
 		$fields = $this->getFieldsForUpdateAsString();
-        $query = "UPDATE `". $this->Table ."` SET  $fields WHERE id = :id";
+        $query = "UPDATE ". $this->Table ." SET  $fields WHERE id = :id";
         return $query;
     }
 	
 	protected function deleteSQL(){
-        $query = "DELETE FROM `". $this->Table ."` WHERE id = ".$this->id;
+        $query = "DELETE FROM ". $this->Table ." WHERE id = ".$this->id;
         return $query;
     }
 
@@ -188,14 +188,15 @@ class ActiveRecord extends Model
 	
 	protected function validate($validate){
 		if($validate){
-			$issetErrors = false;
 			foreach($this::$attributeLabels as $field => $properties){
 				if(strlen($this->$field)==0 && $properties[2]=='required'){
 					throw new Exceptions\EmptyRequiredFieldException($field);
-				} 
-				
+				}
 				if(strlen($this->$field)!=0 && !Validator::validate($properties[1], $this->$field))
-					throw new Exceptions\InvalidDataException($field);	
+                {
+                    throw new Exceptions\InvalidDataException($field);
+                }
+
 			}
 			return true;
 		}
@@ -209,7 +210,7 @@ class ActiveRecord extends Model
 	public function findOne($id){
 		$query = "SELECT * FROM ".$this->Table." WHERE id = :id";
 		$stmt = self::prepare($query);
-		$result = $stmt->execute(['id'=>$id]);
+		$stmt->execute(['id'=>$id]);
 		$row = $stmt->fetchAll(\PDO::FETCH_CLASS, get_class($this));
 		
 		$errors = $stmt->errorInfo();

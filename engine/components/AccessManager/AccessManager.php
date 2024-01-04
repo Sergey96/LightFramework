@@ -1,6 +1,6 @@
 <?php
 
-namespace engine\Components;
+namespace engine\components\AccessManager;
 
 class AccessManager
 {

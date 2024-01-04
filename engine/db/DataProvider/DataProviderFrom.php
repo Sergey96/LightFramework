@@ -11,7 +11,7 @@ class DataProviderFrom
 	}
 	
 	public function from($table){
-		$this->query .= "FROM `".$table."` ";
+		$this->query .= "FROM ".$table." ";
 		return new DataProviderWhere($this->query);
 	}
 

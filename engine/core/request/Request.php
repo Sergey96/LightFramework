@@ -10,6 +10,7 @@ class Request {
 	public function __construct($_get, $_post){
 		$this->post = $_post;
 		$this->get = $_get;
+
 	}
 	
 	public function get(){

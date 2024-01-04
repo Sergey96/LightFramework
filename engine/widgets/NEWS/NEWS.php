@@ -3,7 +3,7 @@
 namespace engine\widgets\NEWS;
 
 use engine\core\exceptions as Exceptions;
-use engine\WebApp;
+use engine\db\DataProvider\DataProviderWhere;
 
 class NEWS
 {
@@ -11,7 +11,10 @@ class NEWS
 	public $fieldList;
 	public $template;
 	public $title;
-	
+
+	private DataProviderWhere $dataProvider;
+	private $searchModel;
+
 	public function __construct($param){
 		$this->parseParam($param);
 		$this->printNews();
@@ -47,7 +50,6 @@ class NEWS
 	}
 	
 	public function printNews(){
-		$rows = array();
 		$rows = $this->dataProvider->exe($this->searchModel);
 		if($rows){
 			foreach($rows as $article){

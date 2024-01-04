@@ -13,15 +13,15 @@ class SidebarSearchModel extends ActiveRecord
 	public function search(){
 		$result = WebApp::$connection->executeQuery("
 			SELECT 
-				`ss`.`id` as `id`,
-				`ss`.`name` as `section`,
-				`sm`.`name` as `submenu`,
-				`sm`.`link` as `link` 
+				ss.id as id,
+				ss.name as section,
+				sm.name as submenu,
+				sm.link as link 
 			FROM 
-				`sidebar_submenu` as `sm`, 
-				`sidebar_section` as `ss` 
+				sidebar_submenu as sm, 
+				sidebar_section as ss 
 			WHERE 
-			   `sm`.`id_section` = `ss`.`id`
+			   sm.id_section = ss.id
 			");
 		$rows = $result->fetchAll(\PDO::FETCH_ASSOC);
 		$menus = array();

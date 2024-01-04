@@ -25,10 +25,10 @@ class DataProvider
 		foreach($array as $k =>$v)
 		{
 			if($k==0) {
-			    $str .= "`".$v."`";
+			    $str .= '"'.$v.'"';
             }
 			else {
-			    $str .= ", `".$v."`";
+			    $str .= ', "'.$v.'"';
             }
 		}
 
@@ -51,7 +51,12 @@ class DataProvider
 	}
 
 	public function exe($class = null){
-		$result = WebApp::$connection->executeQuery($this->query);
+	    try {
+            $result = WebApp::$connection->executeQuery($this->query);
+
+        } catch (\PDOException $e) {
+//            print_r($e->getMessage());
+        }
 		if (!$result) {
 			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->query);
 		}

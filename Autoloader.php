@@ -80,8 +80,12 @@ namespace app
 		{
 		    $path = $_SERVER['DOCUMENT_ROOT'];
 			$dir = self::levelUpDir($path)  . '/runtime/log.html';
-			$file = fopen($dir, 'a');
 
+			if(!is_writable($dir)) {
+			    return false;
+            }
+
+			$file = fopen($dir, 'a');
 			flock($file, LOCK_EX);
 			fwrite($file, ('¦' .$data .'=>' .date('d.m.Y H:i:s') .'<br/>¦<br/>' .PHP_EOL));
 			flock($file, LOCK_UN);

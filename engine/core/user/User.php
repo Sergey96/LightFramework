@@ -5,7 +5,7 @@ namespace engine\core\user;
 use engine\base\models\ActiveRecord;
 use engine\WebApp;
 use engine\core\exceptions as Exceptions;
-use engine\components\AccessManager;
+use engine\components\AccessManager\AccessManager;
 use common\User\SearchModels\UsersSearchModel;
 
 class User extends ActiveRecord
@@ -24,7 +24,7 @@ class User extends ActiveRecord
             'name' => ['NAME', 'text', 'required'],
             'role' => ['ROLE', 'text', 'null'],
             'token' => ['TOKEN', 'text', 'null'],
-            'created' => ['CREATED', 'datetime', 'required'],
+            'created' => ['CREATED', 'datetime', 'null'],
             'avatar' => ['AVATAR', 'text', 'required']
         ];
 
@@ -68,6 +68,13 @@ class User extends ActiveRecord
         }
     }
 
+    /**
+     * [*] - все авторизованные пользователи
+     * [?] - неавторизованные пользователи
+     * [@] - администраторы
+     *
+     * @return bool
+     */
     public function can()
     {
         $right = WebApp::$controller->accessRights();
@@ -112,15 +119,16 @@ class User extends ActiveRecord
     {
         $model = new UsersSearchModel();
         $models = $model->findName($user->login);
-        if (isset($models[0]))
+        if (isset($models[0])) {
             $model = $models[0];
+        }
 
         if (AccessManager::decryptPassword($user->password, $model->password)) {
             $this->load($model->getDataAsArray(false));
             $this->auth();
             $model->token = $_SESSION['token'];
             $model->setNotNew();
-            $model->save();
+            $model->save(false);
             return true;
         }
         $user->error = 'Неверный логин или пароль';
@@ -136,7 +144,6 @@ class User extends ActiveRecord
     {
         $_SESSION['user'] = $this->name;
         $_SESSION['token'] = md5($this->name . $this->id . time());
-        print_r($_SESSION);
     }
 
     private function checkPassword($authPassword, $tablePassword)
@@ -148,5 +155,11 @@ class User extends ActiveRecord
     {
         return strcmp($authPassword, $tablePassword) === 0;
     }
+
+    public function generatePasswordHash($password)
+    {
+        return AccessManager::encryptPassword($password);
+    }
+
 
 }

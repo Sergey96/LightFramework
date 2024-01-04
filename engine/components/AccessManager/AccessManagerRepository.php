@@ -1,6 +1,6 @@
 <?php
 
-namespace engine\Components;
+namespace engine\components\AccessManager;
 
 use engine\WebApp;
 
@@ -11,10 +11,10 @@ class AccessManagerRepository
 			SELECT 
 			    * 
 			FROM 
-				`assign_roles`, `access_roles` 
+				assign_roles, access_roles 
 			WHERE 
-				`assign_roles`.`id_user` = '.$id.' AND 
-				`assign_roles`.`id_roles` = `access_roles`.`id`
+				assign_roles.id_user = '.$id.' AND 
+				assign_roles.id_role = access_roles.id
         ';
 
         $result = WebApp::$connection->executeQuery($sql);

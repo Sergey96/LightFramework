@@ -30,8 +30,10 @@ class WebApp
 	public static Logger $logger;
 	/// Объект текущего контроллера приложения (default из main.php)
 	public static Controller $controller;
-	/// Базовый каталог приложения
+	/// Основной каталог приложения
 	public static string $home;
+    /// Базовый каталог фреймворка
+	public static string $basePath;
 	/// Объект user - текущий пользователь
 	public static User $user;
 	/// Строка time - Время для замера производительности
@@ -40,7 +42,12 @@ class WebApp
     /**
      * @var URLManager
      */
-    public URLManager $URL;
+    public static URLManager $URL;
+
+    public const DEBUG_MODE = 'DEBUG_MODE';
+    public const PROD_MODE = 'PROD_MODE';
+
+    public static $MODE;
 	
 	/**
 	 * инициализация приложения
@@ -57,15 +64,21 @@ class WebApp
 	public function __construct($config){
 		session_start();
 		set_error_handler("\\engine\\WebApp::LightErrorHandler");
+		error_reporting(0);
 
         WebApp::$config = $config;
-
+        self::$MODE = $config['mode'] ?? self::PROD_MODE;
 		$this->run();
 	}
 
 	public function isAjaxMode()
     {
         return strpos($_SERVER['HTTP_ACCEPT'], "json") !== false;
+    }
+
+    public function isDebug()
+    {
+        return self::$MODE === self::DEBUG_MODE;
     }
 	
 	/**
@@ -79,16 +92,20 @@ class WebApp
 
 		try {
             self::$request = new Request($_GET, $_POST);
+
             self::$logger = new Logger();
 
             self::$home = $this->levelUpDir($this->levelUpDir(self::$config['home']));
+            self::$home = $this->levelUpDir($this->levelUpDir($this->levelUpDir(self::$config['home'])));
+            self::$basePath = $this->levelUpDir($this->levelUpDir($this->levelUpDir(self::$config['home'])));
 
-			$this->URL = new URLManager(self::$config);
+//            print_r(self::$home);
+			self::$URL = new URLManager(self::$config);
             self::$connection = new DataBase(self::$config['db']);
             self::$user = new User();
             $control = $this->getController();
 
-            self::$controller = new $control($this->URL, $isAjax);
+            self::$controller = new $control(self::$URL, $isAjax);
             echo self::$controller->execAction();
 		}
 		catch(\Exception $e){
@@ -101,19 +118,20 @@ class WebApp
 
 	private function responseError($e, $isAjax)
     {
-        self::$controller = new ErrorController($this->URL, $isAjax);
+        self::$controller = new ErrorController(self::$URL, $isAjax);
+
         echo self::$controller->actionError($e);
     }
 
 	private function getController()
     {
-        switch($this->URL->Controller){
+        switch(self::$URL->Controller){
             case "Gii": $control = "engine\\components\\Gii\\Gii"; break;
-            default : $control = self::$config['namespace']."\\controllers\\".$this->URL->Controller; break;
+            default : $control = self::$config['namespace']."\\controllers\\".self::$URL->Controller; break;
         }
 
         if (!class_exists($control)){
-            throw new Exceptions\URLNotFoundException($this->URL->Controller);
+            throw new Exceptions\URLNotFoundException(self::$URL->Controller);
         }
 
         return $control;

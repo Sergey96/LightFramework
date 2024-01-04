@@ -18,11 +18,21 @@ class URLManager
 
     public function parseUrl()
     {
-        $this->Controller = $this->getController();
-        $this->Action = $this->getAction();
+        $this->Controller = $this->parseController();
+        $this->Action = $this->parseAction();
     }
 
-    private function getController()
+    public function getAction()
+    {
+        return mb_strtolower($this->Action, 'UTF-8');
+    }
+
+    public function getController()
+    {
+        return mb_strtolower($this->Controller, 'UTF-8');
+    }
+
+    private function parseController()
     {
         if (preg_match_all('/^[\/]*[a-z]+/', $this->URL, $matches)) {
             $control = $matches[0][0];
@@ -36,7 +46,7 @@ class URLManager
         return $controller;
     }
 
-    private function getAction()
+    private function parseAction()
     {
         if (preg_match_all('/^[\/]*[a-z]+[\/]+[a-z0-9]+/', $this->URL, $matches)) {
             $action = $matches[0][0];
@@ -63,7 +73,7 @@ class URLManager
 
     public function getProtocol()
     {
-        return strpos($_SERVER['SERVER_PROTOCOL'], "HTTPS") !== 0 ? 'https' : 'http';
+        return strpos($_SERVER['SERVER_PROTOCOL'], "HTTPS") !== false ? 'https' : 'http';
     }
 
     public function arrayToURL($param, $controller)

@@ -62,9 +62,9 @@ class Model
                 $this->ErrorLoad = 'Отсутствует обязательное поле: ' . $field;
                 return false;
             }
-
             if ($this->isValid($array, $field)) {
-                $this->$field = htmlspecialchars($array[$field]);
+                $value = isset($array[$field]) ? $array[$field] : '';
+                $this->$field = htmlspecialchars($value);
             }
         }
 
@@ -80,7 +80,7 @@ class Model
         $rules = $this->getRules();
 
         $format = $rules[$field][$this::FORMAT_SIGN];
-        $value = $array[$field];
+        $value = isset($array[$field]) ? $array[$field] : '';
 
         if (isset($value) && strlen($value) != 0) {
             if (Validator::validate($format, $value)) {

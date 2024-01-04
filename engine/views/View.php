@@ -8,7 +8,6 @@ use engine\core\exceptions as Exceptions;
 //Класс представления
 class View
 {
-
 	public $ViewPath;
 	public $Name;
 	public $title;

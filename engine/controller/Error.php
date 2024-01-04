@@ -4,6 +4,7 @@ namespace engine\Controller;
 
 use engine\base\controllers\Controller;
 use engine\core\components\URLManager;
+use engine\WebApp;
 
 /**
  * ErrorController
@@ -34,7 +35,7 @@ class Error extends Controller
         }
 
         return $this->render('error', [
-            'title' => $exception->getMessage(),
+            'title' => WebApp::isDebug() ? $exception->getMessage() : 'Ошибка сервера',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
             'objError' => $exception->getFile(),

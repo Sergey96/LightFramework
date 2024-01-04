@@ -31,6 +31,8 @@ class Controller
     /// Формирование ответов по умолчанию в json
     public $isAjax = false;
 
+    public const DEFAULT_LAYOUT = 'main';
+
     public function accessRights()
     {
         return array();
@@ -44,12 +46,21 @@ class Controller
      */
     public function __construct(URLManager $URL, $isAjax)
     {
-        $this->Action = mb_strtolower($URL->Action, 'UTF-8');
+        $this->Name = $URL->getController();
+        $this->Action = $URL->getAction();
+
+        $this->Layout = $this::DEFAULT_LAYOUT;
+
         $this->URL = $URL->getProtocol() . "://" . $URL->getURL();
-        $this->Layout = 'main';
-        $this->Name = strtolower($URL->Controller);
-        $this->ViewPath = '/'. WebApp::$config['namespace'] . '/views/';
+
+        $this->ViewPath = $this->getViewPath();
+//        print_r($this->ViewPath);
         $this->isAjax = $isAjax;
+    }
+
+    private function getViewPath()
+    {
+        return '/'. WebApp::$config['namespace'] . '/views/';
     }
 
     /**
@@ -124,10 +135,11 @@ class Controller
     private function checkAccess()
     {
         $right = WebApp::$controller->accessRights();
-        if (!WebApp::$user->can() && WebApp::$user->isRule('*')) {
+        $isCan = WebApp::$user->can();
+        if (!$isCan && WebApp::$user->isRule('*')) {
             throw new Exceptions\ForbiddenException($this->Action);
         }
-        if (!WebApp::$user->can()) {
+        if (!$isCan) {
             $this->redirect([$right['redirect']['view']], $right['redirect']['controller']);
         }
     }
@@ -141,8 +153,9 @@ class Controller
      */
     protected function render(string $view, $param = [])
     {
-        $viewObj = new View($this->getViewFile(), $this->URL);
-        $layoutObj = new View($this->getLayoutFile(), $this->URL);
+        $isEngineView = $this->isEngineView($param);
+        $viewObj = new View($this->getViewFile($isEngineView), $this->URL);
+        $layoutObj = new View($this->getLayoutFile($isEngineView), $this->URL);
 
         $content = $viewObj->render($view, $param);
 
@@ -151,6 +164,11 @@ class Controller
             'title' => $viewObj->getTitle(),
             'params' => $viewObj->getParams()
         ]);
+    }
+
+    private function isEngineView($param = [])
+    {
+        return isset($param['exception']) && strpos(get_class($param['exception']), 'Exception') !== false;
     }
 
     protected function redirect($param, $controller = false)
@@ -183,14 +201,18 @@ class Controller
         return $action;
     }
 
-    private function getViewFile()
+    private function getViewFile($isEngineView)
     {
-        return WebApp::$home . $this->ViewPath . $this->Name;
+        return $isEngineView
+            ? WebApp::$basePath . $this->ViewPath . $this->Name
+            : WebApp::$home . $this->ViewPath . $this->Name;
     }
 
-    private function getLayoutFile()
+    private function getLayoutFile($isEngineView)
     {
-        return WebApp::$home . $this->ViewPath . 'layout';
+        return $isEngineView
+            ? WebApp::$basePath . $this->ViewPath . 'layout'
+            : WebApp::$home . $this->ViewPath . 'layout';
     }
 
     private function getArgsForMethod($action)

@@ -29,6 +29,7 @@ class DataBase extends Model
 
     /**
      * Инициализация
+     * @throws Exception
      */
     private function init()
     {
@@ -41,13 +42,13 @@ class DataBase extends Model
                     \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
                 ];
 
-                $dsn = "mysql:host=" . $this->config['host'] . ";dbname=" . $this->config['dbname'];
+                $dsn = "pgsql:host=" . $this->config['host'] . ";dbname=" . $this->config['dbname'];
 
                 $this->connection = new \PDO($dsn, $this->config['login'], $this->config['password'], $opt);
 
                 $this->status = true;
             } catch (\PDOException $e) {
-                throw new Exception($e->getMessage());
+                throw new \Exception($e->getMessage());
             }
         }
     }
