@@ -4,9 +4,10 @@ namespace engine\core\DB;
 
 use engine\base\models\Model;
 use Exception;
+use PDOStatement;
 
 /**
- * DataBase - Класс для работы с БД
+ * DB - Класс для работы с БД
  */
 class DataBase extends Model
 {
@@ -41,7 +42,7 @@ class DataBase extends Model
                     \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
                 ];
 
-                $dsn = "pgsql:host=" . $this->config['host'] . ";dbname=" . $this->config['dbname'];
+                $dsn = "mysql:host=" . $this->config['host'] . ";dbname=" . $this->config['dbname'];
 
                 $this->connection = new \PDO($dsn, $this->config['login'], $this->config['password'], $opt);
 
@@ -55,7 +56,7 @@ class DataBase extends Model
     /**
      * Выполнение произвольного SQL-запроса
      * @param $query
-     * @return false|\PDOStatement
+     * @return false|PDOStatement
      */
     public function executeQuery($query)
     {
@@ -65,7 +66,7 @@ class DataBase extends Model
     /**
      * Подготовка \PDO->SQL - запроса
      * @param $query
-     * @return bool|\PDOStatement
+     * @return bool|PDOStatement
      */
     public function prepare($query)
     {
