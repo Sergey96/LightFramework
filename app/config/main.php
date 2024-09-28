@@ -5,9 +5,9 @@
 return [
     'db' => [
         'host' => 'localhost',
-        'login' => 'admin',
-        'password' => '123456',
-        'dbname' => 'vk',
+        'login' => 'root',
+        'password' => '',
+        'dbname' => 'light',
     ],
     'controller' => [
         'default' => 'Home'
