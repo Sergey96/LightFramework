@@ -1,12 +1,13 @@
 <?php
 
-namespace engine\components\Gii;
+namespace engine\core\components\Gii;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\base\controllers\Controller;
 use engine\Components\Gii\models\Models;
 use engine\Components\Gii\models\Views;
+use engine\core\exceptions\FileNotFoundException;
 
 /**
  * Gii автогенератор кода
@@ -18,8 +19,8 @@ class Gii extends Controller
 	/**
 	 * Права доступа
 	 */
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[
@@ -29,9 +30,9 @@ class Gii extends Controller
 					'roles' => ['dev'],
 				],
 				[
-					'allow' => false,
+					'allow' => true,
 					'actions' => ['index', 'models', 'crud', 'generate', 'view'],
-					'roles' => ['*'],
+					'roles' => ['*', '?'],
 				]
 			],
 			'redirect' => [
@@ -40,38 +41,49 @@ class Gii extends Controller
 			]
 		];
 	}
+
+    protected function getViewPath(): string
+    {
+        return '/engine/core/components/gii/views/';
+    }
 	
 	/**
 	 * Папка представления (относительно web/index.php файла)
 	 */
-	public $ViewPath  = '../../engine/components/Gii/views/';
+//	public $ViewPath  = '../../engine/components/Gii/views/';
 
 	/**
-	 * action - действие по-умолчанию
-	 */
-	public function action(){
+	 * Action - действие по-умолчанию
+     * @throws FileNotFoundException
+     */
+	public function action(): string
+    {
 	    return $this->render("index");
     }
-	
-	/**
-	 * action - Генератор Моделей
-	 */
-	public function actionModels(){
+
+    /**
+     * action - Генератор Моделей
+     * @throws FileNotFoundException
+     */
+	public function actionModels(): string
+    {
 	    return $this->render("models");
     }
-	
-	/**
-	 * action - Генератор CRUD операций
-	 * Файлы
-	 * - controllers/Controller.php
-	 * - views/controller_name/index.php
-	 * - views/controller_name/create.php
-	 * - views/controller_name/view.php
-	 * - views/controller_name/update.php
-	 * - views/controller_name/_form.php
-	 * - views/controller_name/error.php
-	 */
-	public function actionCrud(){
+
+    /**
+     * action - Генератор CRUD операций
+     * Файлы
+     * - controllers/Controller.php
+     * - views/controller_name/index.php
+     * - views/controller_name/create.php
+     * - views/controller_name/view.php
+     * - views/controller_name/update.php
+     * - views/controller_name/_form.php
+     * - views/controller_name/error.php
+     * @throws FileNotFoundException
+     */
+	public function actionCrud(): string
+    {
 	    return $this->render("crud");
     }
 	
@@ -101,7 +113,7 @@ class Gii extends Controller
 	 * отображает исходный код сгенерированного файла
 	 */
 	private function viewModels(){
-		$path = WebApp::$home.'/'.WebApp::$request->get()['file'].'.php';
+		$path = App::$home.'/'.App::$request->get()['file'].'.php';
 		$file = file_get_contents($path);
 		$file = substr($file, 5);
 		$this->render('view', [
@@ -117,12 +129,12 @@ class Gii extends Controller
 	 */
 	private function genModels(){
 		$model = new Models();
-		if(isset(WebApp::$request->post()['tableName'])){
-			$model->setTableName(WebApp::$request->post()['tableName']);
+		if(isset(App::$request->post()['tableName'])){
+			$model->setTableName(App::$request->post()['tableName']);
 		} else {
 			$this->redirect(['models']);
 		}
-		if ($model->load(WebApp::$request->post())){
+		if ($model->load(App::$request->post())){
 			
 			$model->openTemplate();
 			if($model->insertValues()){
@@ -141,7 +153,7 @@ class Gii extends Controller
 	 */
 	private function genCRUD(){
 		$model = new Views();
-		$model->load(WebApp::$request->post());
+		$model->load(App::$request->post());
 		if (!$model->getErrorsLoad()){
 			$Model = $model->ModelNamespace.'\\'.$model->ModelName;
 			$table = new $Model();

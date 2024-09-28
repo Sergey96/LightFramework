@@ -3,37 +3,41 @@
 namespace engine\base\controllers;
 
 use engine\core\components\URLManager;
-use engine\WebApp;
+use engine\core\exceptions\ArgumentNotFoundException;
+use engine\core\exceptions\FileNotFoundException;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\views\View;
+use Exception;
 
 /**
  * Базовый класс - Controller
  */
+
 /// Базовый контроллер
 
-class Controller
+class Controller implements IController
 {
     /// Имя контроллера
-    public $Name;
+    public string|array|null|false $Name;
     /// Действие
-    public $Action;
+    public string|array|null|false $Action;
     /// Текущий URL
-    public $URL;
+    public string $URL;
     /// Директория для представлений
-    public $ViewPath;
+    public string $ViewPath;
     /// Имя шаблона views
-    public $Layout;
+    public string $Layout;
     /// Массив параметров (breadcrumbs и т.д.)
-    public $params;
+    public array $params;
     /// Заголовок html-страницы
-    public $title;
+    public string $title;
     /// Формирование ответов по умолчанию в json
-    public $isAjax = false;
+    public bool $isAjax = false;
 
     public const DEFAULT_LAYOUT = 'main';
 
-    public function accessRights()
+    public function accessRights(): array
     {
         return array();
     }
@@ -54,21 +58,22 @@ class Controller
         $this->URL = $URL->getProtocol() . "://" . $URL->getURL();
 
         $this->ViewPath = $this->getViewPath();
-//        print_r($this->ViewPath);
+
         $this->isAjax = $isAjax;
     }
 
-    private function getViewPath()
+    public function getViewPath(): string
     {
-        return '/'. WebApp::$config['namespace'] . '/views/';
+        return '/'. App::$config['namespace'] . '/views/';
     }
 
     /**
      * Действие по умолчанию (рендерниг index-страницы)
      *
      * @return string
+     * @throws FileNotFoundException
      */
-    public function action()
+    public function action(): string
     {
         return $this->render('index');
     }
@@ -77,8 +82,9 @@ class Controller
      * Действие для controller/index (рендерниг index-страницы)
      *
      * @return string
+     * @throws FileNotFoundException
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index');
     }
@@ -86,9 +92,11 @@ class Controller
     /**
      * Страница ошибки по умолчанию (рендерниг error-страницы)
      *
+     * @param Exception $exception
      * @return string
+     * @throws FileNotFoundException
      */
-    public function error($exception)
+    protected function error(Exception $exception): string
     {
         return $this->render('error', [
             'title' => $exception->getMessage(),
@@ -110,7 +118,7 @@ class Controller
      * @throws Exceptions\ArgumentNotFoundException
      * @throws Exceptions\ForbiddenException
      */
-    public function execAction()
+    public function execAction(): string
     {
         $this->checkAccess();
         $action = $this->getActionMethod();
@@ -132,11 +140,11 @@ class Controller
         }
     }
 
-    private function checkAccess()
+    private function checkAccess(): void
     {
-        $right = WebApp::$controller->accessRights();
-        $isCan = WebApp::$user->can();
-        if (!$isCan && WebApp::$user->isRule('*')) {
+        $right = App::$controller->accessRights();
+        $isCan = App::$user->can();
+        if (!$isCan && App::$user->isRule('*')) {
             throw new Exceptions\ForbiddenException($this->Action);
         }
         if (!$isCan) {
@@ -147,11 +155,12 @@ class Controller
     /**
      * Функция рендеринга представления
      *
-     * @param $view
+     * @param string $view
      * @param array $param
      * @return string
+     * @throws FileNotFoundException
      */
-    protected function render(string $view, $param = [])
+    protected function render(string $view, array $param = []): string
     {
         $isEngineView = $this->isEngineView($param);
         $viewObj = new View($this->getViewFile($isEngineView), $this->URL);
@@ -166,12 +175,12 @@ class Controller
         ]);
     }
 
-    private function isEngineView($param = [])
+    private function isEngineView($param = []): bool
     {
         return isset($param['exception']) && strpos(get_class($param['exception']), 'Exception') !== false;
     }
 
-    protected function redirect($param, $controller = false)
+    protected function redirect($param, $controller = false): void
     {
         if ($controller === false)
             $controller = $this->Name;
@@ -182,18 +191,18 @@ class Controller
         header('Location: ' . $this->arrayToURL($param, $controller));
     }
 
-    protected function asJson($param)
+    protected function asJson($param): false|string
     {
         header('Content-Type: application/json');
         return json_encode($param, JSON_UNESCAPED_UNICODE);
     }
 
-    private function arrayToURL($param, $controller)
+    private function arrayToURL($param, $controller): array|string
     {
-        return WebApp::$URL->arrayToURL($param, $controller);
+        return App::$URL->arrayToURL($param, $controller);
     }
 
-    private function getActionMethod()
+    private function getActionMethod(): string
     {
         $action = 'action' . mb_strtoupper(mb_substr($this->Action, 0, 1), 'UTF-8');
         $action .= mb_substr($this->Action, 1, strlen($this->Action) - 1, 'UTF-8');
@@ -201,27 +210,29 @@ class Controller
         return $action;
     }
 
-    private function getViewFile($isEngineView)
+    private function getViewFile($isEngineView): string
     {
         return $isEngineView
-            ? WebApp::$basePath . $this->ViewPath . $this->Name
-            : WebApp::$home . $this->ViewPath . $this->Name;
+            ? App::$basePath . $this->ViewPath . $this->Name
+            : App::$home . $this->ViewPath . $this->Name;
     }
 
-    private function getLayoutFile($isEngineView)
+    private function getLayoutFile($isEngineView): string
     {
-        return $isEngineView
-            ? WebApp::$basePath . $this->ViewPath . 'layout'
-            : WebApp::$home . $this->ViewPath . 'layout';
+        return App::$home . $this->ViewPath . 'layout';
     }
 
-    private function getArgsForMethod($action)
+    /**
+     * @throws \ReflectionException
+     * @throws ArgumentNotFoundException
+     */
+    private function getArgsForMethod($action): array
     {
         $class = new \ReflectionClass($this);
         $param = $class->getMethod($action)->getParameters();
 
         $count = count($param);
-        $GET = WebApp::$request->get();
+        $GET = App::$request->get();
         $notFound = null;
 
         for ($i = 0; $i < $count; $i++) {
@@ -245,7 +256,7 @@ class Controller
      *
      * @return array
      */
-    private function getMethods()
+    private function getMethods(): array
     {
         return get_class_methods($this);
     }
