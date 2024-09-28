@@ -73,7 +73,7 @@ class URLManager
 
     public function getProtocol()
     {
-        return strpos($_SERVER['SERVER_PROTOCOL'], "HTTPS") !== false ? 'https' : 'http';
+        return  $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
     }
 
     public function arrayToURL($param, $controller)
