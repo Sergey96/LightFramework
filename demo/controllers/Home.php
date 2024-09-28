@@ -6,11 +6,11 @@ use engine\base\controllers\Controller;
 use demo\models\ArticleModel;
 use demo\models\LoginFormModel;
 use demo\models\SearchModels\ArticleSearchModel;
-use engine\WebApp;
+use engine\App;
 
 class Home extends Controller
 {
-	public $Layout = 'main2';
+	public string $Layout = 'main2';
 	
 	public function accessRights()
 	{
@@ -47,7 +47,7 @@ class Home extends Controller
 	
 	public function actionIndex(){
 		$searchModel = new ArticleSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -64,7 +64,7 @@ class Home extends Controller
 	
 	public function actionUpdate($id){
 		$model = new ArticleModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}
@@ -87,7 +87,7 @@ class Home extends Controller
 	 */
 	public function actionLogin(){
 		$model = new LoginFormModel();
-		if($model->load(WebApp::$request->post()) 
+		if($model->load(App::$request->post())
 		   && $model->login()){
 			$this->redirect(['index']);
 		}
@@ -100,7 +100,7 @@ class Home extends Controller
 	 * Выход из аккаунта
 	 */
 	public function actionLogout(){
-		WebApp::$user->logout();
+		App::$user->logout();
 		$this->redirect(['index'], 'home');
 	}
 	

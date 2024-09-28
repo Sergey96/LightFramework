@@ -2,10 +2,9 @@
 
 namespace admin\controllers;
 
-use engine\Controller\Controller;
-use admin\models\ArticleModel;
 use admin\models\LoginFormModel;
-use engine\WebApp;
+use engine\App;
+use engine\base\controllers\Controller;
 
 /**
  * Home контроллер по-умолчанию
@@ -28,7 +27,7 @@ class Home extends Controller
 				],
 				[
 					'allow' => true,
-					'actions' => ['login', 'error'],
+					'actions' => ['login', 'error', 'signup'],
 					'roles' => ['?'],
 				],
 			],
@@ -61,7 +60,7 @@ class Home extends Controller
 	public function actionUpdate($id){
 		$model = new FilmsModel();
 		//if($model->load(WebApp::$request->post())){
-		if(WebApp::$request->post()){
+		if(App::$request->post()){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -86,19 +85,28 @@ class Home extends Controller
 	 */
 	public function actionLogin(){
 		$model = new LoginFormModel();
-		if($model->load(WebApp::$request->post()) && $model->login()){
+		if($model->load(App::$request->post()) && $model->login()){
 			$this->redirect(['index']);
 		}
 		else {
             return $this->render('login', ['model'=>$model]);
 		}
 	}
-		
-	/**
+
+    /**
+     * Авторизация
+     */
+    public function actionSignup(){
+        $model = new LoginFormModel();
+        return $this->render('signup', ['model'=>$model]);
+    }
+
+
+    /**
 	 * Выход из аккаунта
 	 */
 	public function actionLogout(){
-		WebApp::$user->logout();
+		App::$user->logout();
         return $this->redirect(['index'], 'home');
 	}
 	

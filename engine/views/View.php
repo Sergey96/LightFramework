@@ -2,7 +2,8 @@
 
 namespace engine\views;
 
-use engine\WebApp;
+use engine\core\exceptions\FileNotFoundException;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 
 //Класс представления
@@ -32,8 +33,11 @@ class View
 	public function getContent(){
 		return $this->content;
 	}
-	
-	public function render($view, $param = array()){
+
+    /**
+     * @throws FileNotFoundException
+     */
+    public function render($view, $param = array()){
 		$filepath = $this->ViewPath . "/$view.php";
 		return $this->getContentView($filepath, $param);
 	}
@@ -78,7 +82,7 @@ class View
 	
 	public static function endHead()
     {
-		$AssetClass = '\\'.WebApp::$config['namespace'].'\\assets\\AppAsset';
+		$AssetClass = '\\'.App::$config['namespace'].'\\assets\\AppAsset';
 		$Asset = new $AssetClass();
 		echo $Asset::addStyle($Asset::$css);
 		echo "</head>";
@@ -86,7 +90,7 @@ class View
 	
 	public static function endBody()
     {
-		$AssetClass = '\\'.WebApp::$config['namespace'].'\\assets\\AppAsset';
+		$AssetClass = '\\'.App::$config['namespace'].'\\assets\\AppAsset';
 		$Asset = new $AssetClass();
 		echo $Asset::addJs($Asset::$js);
     }

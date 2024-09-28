@@ -3,7 +3,7 @@
 namespace engine\widgets\GridView;
 
 use engine\core\exceptions as Exceptions;
-use engine\WebApp;
+use engine\App;
 
 class GridView
 {
@@ -90,7 +90,7 @@ class GridView
 			$tr .= str_replace("{collumns}", $td, $this->templateRow);
 			foreach($this->actions as $act)
 				$actions .= str_replace("{id}", $row->id, $this->templateActions[$act]);
-			$actions = str_replace("{controller}", WebApp::$controller->Name, $actions);
+			$actions = str_replace("{controller}", App::$controller->Name, $actions);
 			$tr = str_replace("{actions}", $actions, $tr);
 		}
 		$table =  str_replace("{rows}", $tr, $this->templateTable);

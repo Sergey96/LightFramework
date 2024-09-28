@@ -2,7 +2,7 @@
 
 namespace admin\models;
 
-use engine\WebApp;
+use engine\App;
 	
 /**
  * Модель - UsersModel

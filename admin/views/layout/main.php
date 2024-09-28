@@ -1,8 +1,7 @@
 <?php
 	
-use engine\WebApp;
+use engine\App;
 use engine\widgets\Breadcrumbs;
-use admin\assets\AppAsset;
 
 $this->title = $title;
 $this->params = $params;
@@ -18,7 +17,7 @@ $this->params = $params;
 <body>
 	<div id="page">
 		<div id="sidebar">
-			<a class="sidebar_title" href="http://admin.light.edu">LIGHT FRAMEWORK</a>
+            <a class="sidebar_title" href="/">LIGHT FRAMEWORK</a>
 			<ul class='sidebar-menu'>
 				
 			  <li class='sidebar-header'></li>
@@ -72,12 +71,12 @@ $this->params = $params;
 						<?php Breadcrumbs::View($this->params['breadcrumbs']);?>
 					</div>
 					<?php 
-						if(!WebApp::$user->name){ ?>
+						if(!App::$user->name){ ?>
 							<div class='login-box col-xs-3'><a href='/home/login'>Войти</a></div>
 					<?php 
 						} else { ?>
 							<div class='logout-box col-xs-3'>
-								<a href='/home/logout'>Выход: </a><span class='logout-user'><?= WebApp::$user->name ?><span>
+								<a href='/home/logout'>Выход: </a><span class='logout-user'><?= App::$user->name ?><span>
 							</div>
 					<?php } ?>
 				</div>

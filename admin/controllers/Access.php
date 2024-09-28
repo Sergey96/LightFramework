@@ -2,10 +2,10 @@
 
 namespace admin\controllers;
 
-use engine\WebApp;
-use engine\Controller\Controller;
+use engine\App;
 use admin\models\AccessRolesModel;
 use admin\models\SearchModels\AccessSearchModel;
+use engine\base\controllers\Controller;
 
 /**
  * Access - admin\controllers Контроллер
@@ -50,7 +50,7 @@ class Access extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new AccessSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -62,7 +62,7 @@ class Access extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new AccessRolesModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -77,7 +77,7 @@ class Access extends Controller
 	 */
 	public function actionCreate(){
 		$model = new AccessRolesModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

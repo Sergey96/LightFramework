@@ -2,7 +2,7 @@
 
 namespace engine\widgets\Sidebar;
 
-use engine\WebApp;
+use engine\App;
 use engine\widgets\Sidebar\models\SidebarSearchModel;
 use engine\views\View;
 
@@ -19,7 +19,7 @@ class Sidebar
 	public static function View(){
 		$model = new SidebarSearchModel();
 		$menus = $model->search();
-		$viewObj = new View(self::$ViewPath, WebApp::$controller->URL);
+		$viewObj = new View(self::$ViewPath, App::$controller->URL);
 		return $viewObj->render('ul', ['menus'=>$menus]);
 	}
 

@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use engine\WebApp;
+use engine\App;
 use engine\base\controllers\Controller;
 use app\models\ArticleModel;
 use app\models\SearchModels\ArticleSearchModel;
@@ -55,7 +55,7 @@ class Article extends Controller
 	 */
 	public function actionView($id){
 		$searchModel = new ArticleSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
 		return $this->render('view', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel

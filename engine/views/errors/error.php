@@ -1,7 +1,7 @@
 <?php
 
 use engine\core\helpers\html;
-use engine\WebApp;
+use engine\App;
 
 $this->title = html::toUTF8($title ?? '');
 $this->params['breadcrumbs'][] = ['label' => 'Главная', 'url' => $this->HomeURL];
@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = "Страница ошибки";
 ?>
 <?php
 
-if (WebApp::isDebug()) {
+if (App::isDebug()) {
     ?>
     <div class="site-error">
 

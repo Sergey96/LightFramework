@@ -2,7 +2,7 @@
 
 namespace engine\db\DataProvider;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 
 class DataProviderWhere
@@ -48,9 +48,9 @@ class DataProviderWhere
 	}
 
 	public function exe($class = null){
-		$result = WebApp::$connection->executeQuery($this->query);
+		$result = App::$connection->executeQuery($this->query);
 		if (!$result) {
-			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->query);
+			throw new Exceptions\DataBaseException(App::$connection->getErrors()[2].' '.$this->query);
 		}
 		if($this->asArray)
 			return $result->fetchAll(\PDO::FETCH_ASSOC);

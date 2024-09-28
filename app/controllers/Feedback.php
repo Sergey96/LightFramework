@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use engine\WebApp;
+use engine\App;
 use engine\base\controllers\Controller;
 use app\models\FeedbackModel;
 
@@ -54,7 +54,7 @@ class Feedback extends Controller
 	 */	
 	public function actionCreate(){
 		$model = new FeedbackModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->created = date("Y-m-d H:i:s");
 			$model->save();
             return $this->render('send');

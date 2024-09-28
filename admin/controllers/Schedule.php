@@ -2,8 +2,8 @@
 
 namespace admin\controllers;
 
-use engine\WebApp;
-use engine\Controller\Controller;
+use engine\App;
+use engine\base\controllers\Controller;
 use admin\models\ScheduleModel;
 use admin\models\SearchModels\ScheduleSearchModel;
 
@@ -50,7 +50,7 @@ class Schedule extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new ScheduleSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -62,7 +62,7 @@ class Schedule extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new ScheduleModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -77,7 +77,7 @@ class Schedule extends Controller
 	 */
 	public function actionCreate(){
 		$model = new ScheduleModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

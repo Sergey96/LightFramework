@@ -2,7 +2,7 @@
 
 namespace engine\components\AccessManager;
 
-use engine\WebApp;
+use engine\App;
 
 class AccessManagerRepository
 {
@@ -17,7 +17,7 @@ class AccessManagerRepository
 				assign_roles.id_role = access_roles.id
         ';
 
-        $result = WebApp::$connection->executeQuery($sql);
+        $result = App::$connection->executeQuery($sql);
         $answer = $result->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach($answer as $value)

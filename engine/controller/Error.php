@@ -4,7 +4,7 @@ namespace engine\Controller;
 
 use engine\base\controllers\Controller;
 use engine\core\components\URLManager;
-use engine\WebApp;
+use engine\App;
 
 /**
  * ErrorController
@@ -34,8 +34,8 @@ class Error extends Controller
             return $this->asJson(['error' => $result]);
         }
 
-        return $this->render('error', [
-            'title' => WebApp::isDebug() ? $exception->getMessage() : 'Ошибка сервера',
+        $error = [
+            'title' => App::isDebug() ? $exception->getMessage() : 'Ошибка сервера',
             'message' => $exception->getMessage(),
             'code' => $exception->getCode(),
             'objError' => $exception->getFile(),
@@ -43,7 +43,9 @@ class Error extends Controller
             'line' => $exception->getLine(),
             'exception' => $exception,
             'isAjax' => $this->isAjax,
-        ]);
+        ];
+
+        return $this->render('error', $error);
     }
 
 }

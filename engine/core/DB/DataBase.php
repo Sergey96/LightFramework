@@ -23,7 +23,6 @@ class DataBase extends Model
     {
         $this->config = $config;
         $this->status = false;
-
         $this->init();
     }
 

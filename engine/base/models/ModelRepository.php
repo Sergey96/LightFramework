@@ -2,7 +2,7 @@
 
 namespace engine\base\models;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\components\gii\models\Column;
 
@@ -22,10 +22,10 @@ class ModelRepository
     {
         $sql = "SHOW COLUMNS FROM `$table`";
 
-        $query = WebApp::$connection->executeQuery($sql);
+        $query = App::$connection->executeQuery($sql);
 
         if (!$query) {
-            throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2] . ' ' . $table);
+            throw new Exceptions\DataBaseException(App::$connection->getErrors()[2] . ' ' . $table);
         }
 
         return $query->fetchAll(\PDO::FETCH_CLASS, Column::class);

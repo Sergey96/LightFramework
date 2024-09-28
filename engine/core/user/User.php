@@ -3,7 +3,7 @@
 namespace engine\core\user;
 
 use engine\base\models\ActiveRecord;
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\components\AccessManager\AccessManager;
 use common\User\SearchModels\UsersSearchModel;
@@ -75,9 +75,9 @@ class User extends ActiveRecord
      *
      * @return bool
      */
-    public function can()
+    public function can(): bool
     {
-        $right = WebApp::$controller->accessRights();
+        $right = App::$controller->accessRights();
         if ($this->id) {
             $roles = AccessManager::findRoles($this->id);
             $roles[] = "*";
@@ -90,13 +90,11 @@ class User extends ActiveRecord
 
         if ($right) {
             foreach ($right['access'] as $rule) {
-                if ($rule['allow'] == true) {
+                if ($rule['allow']) {
                     $result = array_intersect($rule['roles'], $roles);
                     if (count($result) > 0) {
-                        $method = array_search(WebApp::$controller->Action, $rule['actions']);
-                        if ($method === false) {
-                            $access = false;
-                        } else {
+                        $method = array_search(App::$controller->Action, $rule['actions']);
+                        if ($method !== false) {
                             $access = true;
                             break;
                         }
@@ -109,9 +107,9 @@ class User extends ActiveRecord
         }
     }
 
-    public function isRule($rule)
+    public function isRule($rule): bool
     {
-        $method = array_search($rule, $this->roles);
+        $method = in_array($rule, $this->roles);
         return $method !== false;
     }
 

@@ -2,7 +2,7 @@
 
 namespace engine\db\DataProvider;
 
-use engine\WebApp;
+use engine\App;
 
 class DataProvider
 {
@@ -52,13 +52,13 @@ class DataProvider
 
 	public function exe($class = null){
 	    try {
-            $result = WebApp::$connection->executeQuery($this->query);
+            $result = App::$connection->executeQuery($this->query);
 
         } catch (\PDOException $e) {
 //            print_r($e->getMessage());
         }
 		if (!$result) {
-			throw new Exceptions\DataBaseException(WebApp::$connection->getErrors()[2].' '.$this->query);
+			throw new Exceptions\DataBaseException(App::$connection->getErrors()[2].' '.$this->query);
 		}
 		if($this->asArray) {
             return $result->fetchAll(\PDO::FETCH_ASSOC);

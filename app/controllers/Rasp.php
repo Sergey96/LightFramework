@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use engine\WebApp;
+use engine\App;
 use engine\base\controllers\Controller;
 use app\models\ScheduleModel;
 use app\models\SearchModels\ScheduleSearchModel;
@@ -50,7 +50,7 @@ class Rasp extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new ScheduleSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('view', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -62,7 +62,7 @@ class Rasp extends Controller
 	 */
 	public function actionGroups(){
 		$searchModel = new ScheduleSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel, 
@@ -75,7 +75,7 @@ class Rasp extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new ScheduleModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -90,7 +90,7 @@ class Rasp extends Controller
 	 */
 	public function actionCreate(){
 		$model = new ScheduleModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

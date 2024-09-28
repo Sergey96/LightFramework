@@ -2,7 +2,7 @@
 
 namespace engine\core\components\gii\models;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\base\models\Model;
 use engine\core\components\gii\models\Column;
@@ -74,7 +74,7 @@ class Models extends Model
 	 * @throw FileNotFoundException Не Найден Файл Шаблона
 	 */
 	public function openTemplate(){
-		$filepath = WebApp::$home."/engine/components/Gii/".$this->templateName.'.tpl';
+		$filepath = App::$home."/engine/components/Gii/".$this->templateName.'.tpl';
 		if(file_exists($filepath)){
 			$this->model = file_get_contents($filepath);
 		}
@@ -159,7 +159,7 @@ class Models extends Model
 	 * @throw FileExistsException Файл Уже Существует (данные не перезаписываются)
 	 */
 	public function writeModel(){
-		$filepath = str_replace("\\", "/", WebApp::$home.'/'.$this->nameSpace."/".$this->className.'.php');
+		$filepath = str_replace("\\", "/", App::$home.'/'.$this->nameSpace."/".$this->className.'.php');
 
 		if(file_exists($filepath))
 			throw new Exceptions\FileExistsException($filepath);

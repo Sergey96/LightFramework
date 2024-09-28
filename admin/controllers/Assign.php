@@ -2,7 +2,7 @@
 
 namespace admin\controllers;
 
-use engine\WebApp;
+use engine\App;
 use engine\Controller\Controller;
 use admin\models\AssignRolesModel;
 use admin\models\SearchModels\AssignSearchModel;
@@ -50,7 +50,7 @@ class Assign extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new AssignSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
 		$this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -62,7 +62,7 @@ class Assign extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new AssignRolesModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -77,7 +77,7 @@ class Assign extends Controller
 	 */
 	public function actionCreate(){
 		$model = new AssignRolesModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

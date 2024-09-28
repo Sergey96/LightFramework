@@ -7,12 +7,13 @@ return [
 		'host'=>'localhost',
 		'login'=>'root',
 		'password'=>'',
-		'dbname'=>'vk_parser',
+		'dbname'=>'light',
         'charset' => 'utf8',
 	],
 	'controller'=>[
 		'default'=>'Users'
 	],
+	'mode' => \engine\App::DEBUG_MODE,
 	'home'=>str_replace("\\", "/", $_SERVER['DOCUMENT_ROOT']),
 	'namespace'=>'admin',
 ];

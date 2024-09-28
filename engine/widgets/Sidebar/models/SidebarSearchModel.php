@@ -3,7 +3,7 @@
 namespace engine\widgets\Sidebar\models;
 
 use engine\base\models\ActiveRecord;
-use engine\WebApp;
+use engine\App;
 
 /**
  * Модель - SidebarSearchModel Разделы сайдбара
@@ -11,7 +11,7 @@ use engine\WebApp;
 class SidebarSearchModel extends ActiveRecord
 {
 	public function search(){
-		$result = WebApp::$connection->executeQuery("
+		$result = App::$connection->executeQuery("
 			SELECT 
 				ss.id as id,
 				ss.name as section,

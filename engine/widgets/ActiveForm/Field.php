@@ -2,7 +2,7 @@
 
 namespace engine\widgets\ActiveForm;
 
-use engine\WebApp;
+use engine\App;
 use engine\views\View;
 
 class Field 
@@ -24,7 +24,7 @@ class Field
 		$this->label = $label;
 		$this->value = $value;
 		$this->params = $params;
-		$this->viewObj = new View(self::$ViewPath, WebApp::$controller->URL);
+		$this->viewObj = new View(self::$ViewPath, App::$controller->URL);
 	}
 	
 	public function textarea($params = array()){

@@ -2,9 +2,10 @@
 
 namespace engine\components\gii\models;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\base\models\Model;
+use engine\core\exceptions\FileExistsException;
 
 /**
  * GII генерирование Моделей
@@ -27,7 +28,7 @@ class Models extends Model
     /**
      * Имя таблицы связываемой с моделью
      */
-    public $tableName;
+    public string $tableName;
 
     /**
      * Имя Класса Модели (ex. UsersModel)
@@ -73,7 +74,7 @@ class Models extends Model
      * @throw FileNotFoundException Не Найден Файл Шаблона
      */
     public function openTemplate(){
-        $filepath = WebApp::$home."/engine/components/Gii/".$this->templateName.'.tpl';
+        $filepath = App::$home."/engine/components/Gii/".$this->templateName.'.tpl';
         if(file_exists($filepath)){
             $this->model = file_get_contents($filepath);
         }
@@ -99,8 +100,8 @@ class Models extends Model
         $stringToReplaceLabels = '';
         $stringToReplacePHPDocsFields = '';
         $counter = 0;
-        print_r($this->attributes_);
-        exit();
+//        print_r($this->attributes_);
+//        exit();
         foreach($this->attributes_ as $column){
             $column->Type == "int(11)" ? $type = "int" : $type = $column->Type;
             $counter++;
@@ -139,7 +140,8 @@ class Models extends Model
     /**
      * Шаблон правил валидации модели
      */
-    private function getPropertiesAsString($field, $param, $type, $required = false){
+    private function getPropertiesAsString($field, $param, $type, $required = false): string
+    {
         if($required===false)
             return "\t\t'$field' => ['$param', '$type'],\n";
         else
@@ -149,21 +151,23 @@ class Models extends Model
     /**
      * Шаблон PHPDocs
      */
-    private function getPHPDocsAsString($field, $param){
+    private function getPHPDocsAsString($field, $param): string
+    {
         return " * @property $param $$field\n";
     }
 
     /**
      * Записывает получившийся код модели в конечную папку
-     * @throw FileExistsException Файл Уже Существует (данные не перезаписываются)
+     * @throws FileExistsException Файл Уже Существует (данные не перезаписываются)
      */
     public function writeModel(){
-        $filepath = str_replace("\\", "/", WebApp::$home.'/'.$this->nameSpace."/".$this->className.'.php');
+        $filepath = str_replace("\\", "/", App::$home.'/'.$this->nameSpace."/".$this->className.'.php');
 
-        if(file_exists($filepath))
+        if(file_exists($filepath)) {
             throw new Exceptions\FileExistsException($filepath);
-        else
-            file_put_contents($filepath, $this->model);
+        }
+
+        return file_put_contents($filepath, $this->model);
     }
 
 }

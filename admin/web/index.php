@@ -2,6 +2,4 @@
 
 	require_once '../../Autoloader.php';
 	$config = require '../config/main.php';
-	$app = new engine\WebApp($config);
-
-?>
+	$app = new engine\App($config);

@@ -1,5 +1,5 @@
 <?php
-use engine\WebApp; 
+use engine\App;
 
 $back_img = base64_encode(file_get_contents(__DIR__."../404.png"));
 

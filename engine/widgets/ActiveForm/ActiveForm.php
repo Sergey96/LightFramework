@@ -2,7 +2,7 @@
 
 namespace engine\widgets\ActiveForm;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\views\View;
 
@@ -21,16 +21,16 @@ class ActiveForm
 	public static $method;
 	
 	public static function begin($params = array()){
-		self::$name = self::getParam('name', $params, WebApp::$controller->Action);
+		self::$name = self::getParam('name', $params, App::$controller->Action);
 		self::$action = self::getParam('action', $params, $_SERVER['REQUEST_URI']);
 		self::$method = self::getParam('method', $params, 'post');
 	
-		$viewObj = new View(self::$ViewPath, WebApp::$controller->URL);
+		$viewObj = new View(self::$ViewPath, App::$controller->URL);
 		$form = $viewObj->render('form', [
 					'name'=>self::$name,
 					'action'=>self::$action,
 					'method'=>self::$method,
-					'_csrf'=>WebApp::$user->token,
+					'_csrf'=>App::$user->token,
 				]);
 			
 		echo $form;

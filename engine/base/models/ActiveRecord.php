@@ -2,7 +2,7 @@
 
 namespace engine\base\models;
 
-use engine\WebApp;
+use engine\App;
 use engine\core\exceptions as Exceptions;
 use engine\core\validator\Validator;
 
@@ -226,15 +226,15 @@ class ActiveRecord extends Model
 	}
 	
 	protected function exeQuery($query){
-		return WebApp::$connection->executeQuery($query);
+		return App::$connection->executeQuery($query);
 	}
 	
 	protected static function prepare($query){
-		return WebApp::$connection->prepare($query);
+		return App::$connection->prepare($query);
 	}
 	
 	protected function getErrorsDB(){
-		return WebApp::$connection->getErrors();
+		return App::$connection->getErrors();
 	}
 
 }

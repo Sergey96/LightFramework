@@ -2,10 +2,10 @@
 
 namespace admin\controllers;
 
-use engine\WebApp;
-use engine\Controller\Controller;
+use engine\App;
 use admin\models\UsersModel;
 use admin\models\SearchModels\UsersSearchModel;
+use engine\base\controllers\Controller;
 use engine\Components\AccessManager;
 
 /**
@@ -51,7 +51,7 @@ class Users extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new UsersSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
 		$this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -63,7 +63,7 @@ class Users extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new UsersModel();
-		$model->load(WebApp::$request->post());
+		$model->load(App::$request->post());
 		if(!$model->getErrorsLoad()){
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
@@ -83,9 +83,9 @@ class Users extends Controller
 	 */
 	public function actionPassword($id){
 		$model = new UsersModel();
-		if(isset(WebApp::$request->post()['password'])){
+		if(isset(App::$request->post()['password'])){
 			$model = $model->findOne($id);
-			$model->password = AccessManager::encryptPassword(WebApp::$request->post()['password']);
+			$model->password = AccessManager::encryptPassword(App::$request->post()['password']);
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);
 		}
@@ -100,7 +100,7 @@ class Users extends Controller
 	 */
 	public function actionCreate(){
 		$model = new UsersModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

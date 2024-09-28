@@ -2,8 +2,8 @@
 
 namespace admin\controllers;
 
-use engine\WebApp;
-use engine\Controller\Controller;
+use engine\App;
+use engine\base\controllers\Controller;
 use admin\models\ArticleModel;
 use admin\models\SearchModels\ArticleSearchModel;
 
@@ -50,7 +50,7 @@ class Article extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new ArticleSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
 		$this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -62,7 +62,7 @@ class Article extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new ArticleModel();
-		$model->load(WebApp::$request->post());
+		$model->load(App::$request->post());
 		//print_r($model->getErrorsLoad());
 		//exit();
 		if(!$model->getErrorsLoad()){
@@ -81,7 +81,7 @@ class Article extends Controller
 	 */
 	public function actionCreate(){
 		$model = new ArticleModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

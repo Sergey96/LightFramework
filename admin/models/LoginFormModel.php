@@ -2,7 +2,7 @@
 
 namespace admin\models;
 
-use engine\WebApp;
+use engine\App;
 /**
  * Модель - LoginFormModel модель формы авторизацииы
  */
@@ -36,7 +36,7 @@ class LoginFormModel extends \common\User\UsersModel
 	 * Авторизоваться
 	 */
 	public function login(){
-		return WebApp::$user->login($this);
+		return App::$user->login($this);
 	}
 }
 

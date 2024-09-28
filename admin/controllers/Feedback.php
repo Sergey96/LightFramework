@@ -2,8 +2,8 @@
 
 namespace admin\controllers;
 
-use engine\WebApp;
-use engine\Controller\Controller;
+use engine\App;
+use engine\base\controllers\Controller;
 use admin\models\FeedbackModel;
 use admin\models\SearchModels\FeedbackSearchModel;
 use engine\core\exceptions as Exceptions;
@@ -51,7 +51,7 @@ class Feedback extends Controller
 	 */
 	public function actionIndex(){
 		$searchModel = new FeedbackSearchModel();
-		$dataProvider = $searchModel->search(WebApp::$request->get());
+		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
@@ -63,9 +63,9 @@ class Feedback extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new FeedbackModel();
-		if($model->load(WebApp::$request->post())){
-			if(isset(WebApp::$request->post()['_csrf']) && 
-				strcmp(WebApp::$request->post()['_csrf'], WebApp::$user->token) == 0){
+		if($model->load(App::$request->post())){
+			if(isset(App::$request->post()['_csrf']) &&
+				strcmp(App::$request->post()['_csrf'], App::$user->token) == 0){
 				$model->save();
 				$this->redirect(['view', 'id'=>$id]);
 			}
@@ -82,7 +82,7 @@ class Feedback extends Controller
 	 */
 	public function actionCreate(){
 		$model = new FeedbackModel();
-		if($model->load(WebApp::$request->post())){
+		if($model->load(App::$request->post())){
 			$model->save();
 			$this->redirect(['index']);
 		}

@@ -2,7 +2,7 @@
 
 namespace engine\core\validator;
 
-use engine\WebApp;
+use engine\App;
 
 class Validator
 {

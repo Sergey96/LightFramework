@@ -2,7 +2,7 @@
 
 namespace admin\assets;
 
-use engine\base\Asset\Asset;
+use engine\core\asset\Asset;
 
 /**
  * Main frontend application asset bundle.

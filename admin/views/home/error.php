@@ -1,5 +1,5 @@
 <?php
-use engine\WebApp; 
+use engine\App;
 
 $this->title = $title;
 

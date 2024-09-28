@@ -4,5 +4,5 @@
 	// Получение конфигурации приложения
 	$config = require '../config/main.php';
 	// Создание экземпляра приложения
-	$app = new engine\WebApp($config);
+	$app = new engine\App($config);
 
