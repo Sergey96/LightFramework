@@ -134,7 +134,7 @@ class App
     {
         switch (self::$URL->Controller) {
             case "Gii":
-                $control = "engine\\core\\components\\Gii\\Gii";
+                $control = "engine\\core\\components\\gii\\Gii";
                 break;
             default :
                 $control = self::$config['namespace'] . "\\controllers\\" . self::$URL->Controller;

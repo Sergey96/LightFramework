@@ -3,9 +3,9 @@
 namespace admin\controllers;
 
 use engine\App;
-use engine\base\controllers\Controller;
 use admin\models\ArticleModel;
 use admin\models\SearchModels\ArticleSearchModel;
+use engine\base\controllers\Controller;
 
 /**
  * Article - admin\controllers Контроллер
@@ -17,8 +17,8 @@ class Article extends Controller
 	/**
 	 * Права доступа
 	 */
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[
@@ -48,10 +48,11 @@ class Article extends Controller
 	/**
 	 * action - Главная страница
 	 */
-	public function actionIndex(){
+	public function actionIndex(): string
+    {
 		$searchModel = new ArticleSearchModel();
 		$dataProvider = $searchModel->search(App::$request->get());
-		$this->render('index', [
+		return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);
@@ -62,10 +63,7 @@ class Article extends Controller
 	 */
 	public function actionUpdate($id){
 		$model = new ArticleModel();
-		$model->load(App::$request->post());
-		//print_r($model->getErrorsLoad());
-		//exit();
-		if(!$model->getErrorsLoad()){
+		if($model->load(App::$request->post())){
 			$model->setNotNew();
 			$model->save();
 			$this->redirect(['view', 'id'=>$id]);

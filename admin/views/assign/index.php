@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'fields'=>[
 				'id:int',
 				'id_user:int',
-				'id_roles:int',
+				'id_role:int',
 			]
 		]);
 	?>

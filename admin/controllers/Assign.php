@@ -3,9 +3,9 @@
 namespace admin\controllers;
 
 use engine\App;
-use engine\Controller\Controller;
 use admin\models\AssignRolesModel;
 use admin\models\SearchModels\AssignSearchModel;
+use engine\base\controllers\Controller;
 
 /**
  * Assign - admin\controllers Контроллер
@@ -17,8 +17,8 @@ class Assign extends Controller
 	/**
 	 * Права доступа
 	 */
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[
@@ -29,7 +29,7 @@ class Assign extends Controller
 				],
 				[
 					'allow' => true,
-					'actions' => ['login', 'error'],
+					'actions' => ['index',  'login', 'error'],
 					'roles' => ['?'],
 				],
 				[
@@ -48,10 +48,11 @@ class Assign extends Controller
 	/**
 	 * action - Главная страница
 	 */
-	public function actionIndex(){
+	public function actionIndex(): string
+    {
 		$searchModel = new AssignSearchModel();
 		$dataProvider = $searchModel->search(App::$request->get());
-		$this->render('index', [
+		return $this->render('index', [
 			'dataProvider'=>$dataProvider,
 			'searchModel'=>$searchModel
 		]);

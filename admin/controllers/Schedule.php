@@ -17,8 +17,8 @@ class Schedule extends Controller
 	/**
 	 * Права доступа
 	 */
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[
@@ -48,7 +48,8 @@ class Schedule extends Controller
 	/**
 	 * action - Главная страница
 	 */
-	public function actionIndex(){
+	public function actionIndex(): string
+    {
 		$searchModel = new ScheduleSearchModel();
 		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [

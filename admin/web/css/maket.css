@@ -33,10 +33,11 @@ body {
 
 #breadcrumbs {
 	width: 100%;
-	margin-bottom: 15px;
 	float: left;
-	padding: 5px 0px 3px 40px;
+	padding: 5px 24px 3px 40px;
 	background: #222d32;
+	display: flex;
+	justify-content: space-between;
 }
 #breadcrumbs ul {
   padding: 0;
@@ -220,33 +221,6 @@ body {
 
 #data {
     margin: 15px 20px 15px 20px;
-    overflow: hidden;
-}
-
-#data table {
-	background: rgb(224,224,224);
-	border-radius: 10px 10px 0 0px;
-	color: #777;
-	font-weight: 500;
-	font-size: 13px;
-	width: 100%;
-	text-align: left;
-}
-
-#data table th {
-	font-weight: 500;
-	padding: 15px;
-	padding-left: 15px;
-}
-
-#data table tbody {
-	background: #fff;
-}
-
-#data table td {
-    padding: 10px;
-    border: 0;
-    padding-left: 15px;
 }
 
 #data table .control-td {

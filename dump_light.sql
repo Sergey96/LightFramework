@@ -81,7 +81,7 @@ INSERT INTO `articles` (`id`, `title`, `created`, `description`, `content`, `own
 CREATE TABLE `assign_roles` (
   `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
-  `id_roles` int(11) NOT NULL
+  `id_role` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -93,7 +93,7 @@ TRUNCATE TABLE `assign_roles`;
 -- Дамп данных таблицы `assign_roles`
 --
 
-INSERT INTO `assign_roles` (`id`, `id_user`, `id_roles`) VALUES
+INSERT INTO `assign_roles` (`id`, `id_user`, `id_role`) VALUES
 (1, 1, 1),
 (3, 1, 1),
 (4, 1, 4);

@@ -2,8 +2,8 @@
 
 namespace engine\widgets\NEWS;
 
+use DataProviderWhere;
 use engine\core\exceptions as Exceptions;
-use engine\db\DataProvider\DataProviderWhere;
 
 class NEWS
 {

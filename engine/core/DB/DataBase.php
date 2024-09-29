@@ -11,9 +11,17 @@ use PDOStatement;
  */
 class DataBase extends Model
 {
+    public const DATABASE_TYPE_MYSQL = 'mysql';
+    public const DATABASE_TYPE_PSQL = 'psql';
+
     private \PDO $connection;
     private bool $status;
     private array $config;
+    private string $type = self::DATABASE_TYPE_MYSQL;
+
+    public function getType(): string {
+        return $this->type;
+    }
 
     /**
      * Конструктор класса, создает соединение с БД

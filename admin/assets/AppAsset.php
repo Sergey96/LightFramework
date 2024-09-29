@@ -14,7 +14,7 @@ class AppAsset extends Asset
     public static $baseUrl = '@web';
 	/// Массив css-стилей
     public static $css = [
-        '/css/bootstrap.min.css',
+        '/css/bootstrap/bootstrap.min.css',
         //'/css/font-awesome.min.css',
         '/dist/sidebar-menu.css',
         '/css/maket.css',
@@ -25,7 +25,7 @@ class AppAsset extends Asset
 	/// Массив js-скриптов
     public static $js = [
 		'/js/jquery-3.0.0.min.js',
-		'/js/bootstrap.min.js',
+		'/js/bootstrap/bootstrap.min.js',
 		'/dist/sidebar-menu.js'
     ];
 }

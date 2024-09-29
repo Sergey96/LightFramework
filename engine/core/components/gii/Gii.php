@@ -42,7 +42,7 @@ class Gii extends Controller
 		];
 	}
 
-    protected function getViewPath(): string
+    public function getViewPath(): string
     {
         return '/engine/core/components/gii/views/';
     }
