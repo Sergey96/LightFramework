@@ -12,8 +12,8 @@ class Home extends Controller
 {
 	public string $Layout = 'main';
 	
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[
@@ -40,12 +40,14 @@ class Home extends Controller
 		];
 	}
 
-	public function action(){
+	public function action(): string
+    {
 		$model = new ArticleModel();
         return $this->render('index', ['model'=>$model]);
 	}
 	
-	public function actionIndex(){
+	public function actionIndex(): string
+    {
 		$searchModel = new ArticleSearchModel();
 		$dataProvider = $searchModel->search(App::$request->get());
         return $this->render('index', [

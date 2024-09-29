@@ -18,12 +18,13 @@ $this->params = $params;
 <?php $this->endHead() ?>
 <body>
 	<div id="page">
-		<div id="sidebar">
-			<a class="sidebar_title" href="/">LIGHT FRAMEWORK</a>
-			<?php 
-				if(isset(App::$user->name))
-					echo Sidebar::View() ?>
-		</div>
+        <div id="sidebar">
+            <a class="sidebar_title" href="/">LIGHT FRAMEWORK</a>
+            <?php
+            if(isset(App::$user->name))
+                echo Sidebar::View() ?>
+
+        </div>
 		<div id="wrapper">
 			<div id="wrapper-title">
 				<div id="breadcrumbs">

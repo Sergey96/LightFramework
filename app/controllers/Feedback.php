@@ -16,8 +16,8 @@ class Feedback extends Controller
 	/**
 	 * Права доступа
 	 */
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[

@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use engine\App;
 use engine\base\controllers\Controller;
-use app\models\ArticleModel;
 use app\models\SearchModels\ArticleSearchModel;
 
 /**
@@ -17,8 +16,8 @@ class Article extends Controller
 	/**
 	 * Права доступа
 	 */
-	public function accessRights()
-	{
+	public function accessRights(): array
+    {
 		return 
 		[
 			'access'=>[
@@ -49,7 +48,18 @@ class Article extends Controller
 			]
 		];
 	}
-	
+
+
+    public function actionIndex(): string
+    {
+        $searchModel = new ArticleSearchModel();
+        $dataProvider = $searchModel->search(App::$request->get());
+        return $this->render('index', [
+            'dataProvider'=>$dataProvider,
+            'searchModel'=>$searchModel
+        ]);
+    }
+
 	/**
 	 * action - Просмотреть запись
 	 */
@@ -61,6 +71,7 @@ class Article extends Controller
 			'searchModel'=>$searchModel
 		]);
 	}
+
 	
 	
 	

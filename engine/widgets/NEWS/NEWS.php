@@ -12,7 +12,7 @@ class NEWS
 	public $template;
 	public $title;
 
-	private DataProviderWhere $dataProvider;
+	private $dataProvider;
 	private $searchModel;
 
 	public function __construct($param){
